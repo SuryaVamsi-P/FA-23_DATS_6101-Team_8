@@ -43,3 +43,12 @@ p <- p[, !names(p) %in% c('creatinine_apache')]
 p <- p[, !names(p) %in% c('glucose_apache')]
 summary(p)
 ```
+
+```{r}
+p[p == ''] <- NA
+s=na.omit(p)
+summary(p)
+s[1:10,]
+summary(s)
+nrow(s)
+```
