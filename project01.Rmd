@@ -159,3 +159,15 @@ cleaned_data4 <-cleaned_data3[!(cleaned_data3$age %in% outliersage$age),]
 nrow(cleaned_data4)
 
 ```
+
+```{r}
+library(caret)
+encoding <- dummyVars("~ .", data = cleaned_data4)
+encoded_data <- predict(encoded_data_model, newdata = cleaned_data4)
+#print(encoded_data)
+summary(encoded_data)
+str(encoded_data)
+m=as.data.frame(encoded_data)
+#print(m)
+str(m)
+```
