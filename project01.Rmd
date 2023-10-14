@@ -87,3 +87,39 @@ ggplot(data.frame(x=cleaned_data$heart_rate_apache), aes(x))+geom_histogram(binw
 
 ggplot(data.frame(x=cleaned_data$bmi), aes(x))+geom_histogram(binwidth = 2, color="black",fill="blue")+labs(title="visualization of bmi with outliers")
 ```
+
+```{r}
+c3 <- cleaned_data$bmi
+
+
+q1bmi <- quantile(c3, 0.25)
+q3bmi <- quantile(c3, 0.75)
+
+
+iqr_valuebmi <- IQR(c3)
+
+
+lower_boundbmi <- q1bmi - 1.5 * iqr_valuebmi
+upper_boundbmi <- q3bmi + 1.5 * iqr_valuebmi
+
+
+outliersbmi <- cleaned_data[c3 < lower_boundbmi | c3 > upper_boundbmi, ]
+
+
+print("Outliers:")
+print(outliersbmi)
+
+
+print("Lower Bound:")
+print(lower_boundbmi)
+print("Upper Bound:")
+print(upper_boundbmi)
+
+
+
+
+cleaned_data3 <-cleaned_data[!(cleaned_data$bmi %in% outliersbmi$bmi),]
+#nrow(s)
+nrow(cleaned_data3)
+
+```
