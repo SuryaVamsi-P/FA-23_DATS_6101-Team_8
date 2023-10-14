@@ -61,4 +61,14 @@ q3 <- quantile(c, 0.75)
 
 iqr_value <- IQR(c)
 
+lower_bound <- q1 - 1.5 * iqr_value
+upper_bound <- q3 + 1.5 * iqr_value
+
+
+outliers <- c < lower_bound | c > upper_bound
+
+
+print("Outliers:")
+print(c[outliers])
+
 ```
