@@ -52,3 +52,13 @@ s[1:10,]
 summary(s)
 nrow(s)
 ```
+
+```{r}
+c <- s$heart_rate_apache
+
+q1 <- quantile(c, 0.25)
+q3 <- quantile(c, 0.75)
+
+iqr_value <- IQR(c)
+
+```
