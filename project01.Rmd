@@ -71,4 +71,19 @@ outliers <- c < lower_bound | c > upper_bound
 print("Outliers:")
 print(c[outliers])
 
+print("Lower Bound:")
+print(lower_bound)
+print("Upper Bound:")
+print(upper_bound)
+
+cleaned_data <- s[!(s$heart_rate_apache %in% outliers$heart_rate_apache),]
+nrow(cleaned_data)
+
+```
+
+```{r}
+library(ggplot2)
+ggplot(data.frame(x=cleaned_data$heart_rate_apache), aes(x))+geom_histogram(binwidth = 2, color="black",fill="blue")+labs(title="visualization of heart rate without outliers")
+
+ggplot(data.frame(x=cleaned_data$bmi), aes(x))+geom_histogram(binwidth = 2, color="black",fill="blue")+labs(title="visualization of bmi with outliers")
 ```
