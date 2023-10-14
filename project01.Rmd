@@ -179,7 +179,28 @@ library(e1071)
 skew_before <- skewness(m$bmi)
 print(skew_before)
 #Log transformation
-transformed_data <- log(m$bmi + 1)  # Adding 1 to handle zero values if any
+transformed_data <- log(m$bmi + 1)  
 print(skewness(transformed_data))
 m$bmi<-transformed_data
+```
+
+```{r}
+#ggplot(data.frame(x=m$age), aes(x))+geom_histogram(binwidth = 0.002, #color="black",fill="blue")+labs(title="visualization of age without outliers before transformation")
+
+#skew_before1 <- skewness(m$age)
+#print(skew_before1)
+#transformed_data1 <- log(m$age + 1)  
+
+
+#skew_after1 <- skewness(transformed_data1)
+#print(skew_after1)
+#str(transformed_data1)
+#cleaned_data4$age<-transformed_data1
+
+#ggplot(data.frame(x=m$age), aes(x))+geom_histogram(binwidth = 0.002, #color="black",fill="blue")+labs(title="visualization of age without outliers after transformation")
+
+
+
+#a<-exp(m$age)
+#print(a)
 ```
