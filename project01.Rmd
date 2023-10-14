@@ -123,3 +123,39 @@ cleaned_data3 <-cleaned_data[!(cleaned_data$bmi %in% outliersbmi$bmi),]
 nrow(cleaned_data3)
 
 ```
+
+```{r}
+c4 <- cleaned_data3$age
+
+
+q1age <- quantile(c4, 0.25)
+q3age <- quantile(c4, 0.75)
+
+
+iqr_valueage <- IQR(c4)
+
+
+lower_boundage <- q1age - 1.5 * iqr_valueage
+upper_boundage <- q3age + 1.5 * iqr_valueage
+
+
+outliersage <- cleaned_data3[c4 < lower_boundage | c4 > upper_boundage, ]
+
+
+print("Outliers:")
+print(outliersage)
+
+
+print("Lower Bound:")
+print(lower_boundage)
+print("Upper Bound:")
+print(upper_boundage)
+
+
+
+
+cleaned_data4 <-cleaned_data3[!(cleaned_data3$age %in% outliersage$age),]
+#nrow(s)
+nrow(cleaned_data4)
+
+```
