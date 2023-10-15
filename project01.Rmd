@@ -200,6 +200,31 @@ m$bmi<-transformed_data
 #ggplot(data.frame(x=m$age), aes(x))+geom_histogram(binwidth = 0.002, #color="black",fill="blue")+labs(title="visualization of age without outliers after transformation")
 
 
+# Question 1: Is there a heightened risk of mortality associated with alcohol consumption?
+```{r}
+```
+# Question 2: Among different age groups (children, adults, and senior citizens), which demographic exhibits the highest mortality rate?
+```{r}
+```
+# Question 3: Can the presence of medical conditions like diabetes, hepatic failure, or other medical conditions impact an individual's likelihood of mortality?
+```{r}
+```
+# Question 4: What is the gender distribution of deaths in the hospital, with regard to male and female ratios? 
+```{r}
+```
+# Question 5: Is there a heightened risk of mortality associated with alcohol consumption?
+```{r}
+```
+# Question 6: Among different age groups (children, adults, and senior citizens), which demographic exhibits the highest mortality rate?
+
+```{r}
+```
+# Question 7: Can the presence of medical conditions like diabetes, hepatic failure, or other medical conditions impact an individual's likelihood of mortality?
+```{r}
+```
+```
+
+
 
 #a<-exp(m$age)
 #print(a)
