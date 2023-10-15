@@ -235,6 +235,20 @@ cat("The demographic with the highest mortality rate is", highest_mortality_grou
 ```
 # Question 3: Can the presence of medical conditions like diabetes, hepatic failure, or other medical conditions impact an individual's likelihood of mortality?
 ```{r}
+data$diabetes_mellitus <- as.factor(data$diabetes_mellitus)
+data$hepatic_failure <- as.factor(data$hepatic_failure)
+
+model <- glm(hospital_death ~ diabetes_mellitus + hepatic_failure, data = data, family = "binomial")
+
+summary(model)
+
+# Chi-squared test for diabetes_mellitus
+chisq_test_diabetes <- chisq.test(table(data$diabetes_mellitus, data$hospital_death))
+print(chisq_test_diabetes)
+
+# Chi-squared test for hepatic_failure
+chisq_test_hepatic <- chisq.test(table(data$hepatic_failure, data$hospital_death))
+print(chisq_test_hepatic)
 ```
 # Question 4: What is the gender distribution of deaths in the hospital, with regard to male and female ratios? 
 ```{r}
