@@ -252,6 +252,18 @@ print(chisq_test_hepatic)
 ```
 # Question 4: What is the gender distribution of deaths in the hospital, with regard to male and female ratios? 
 ```{r}
+gender_table <- table(data$gender, data$hospital_death)
+
+# Extract the counts of deceased males and females
+deceased_males <- gender_table["M", "1"]
+deceased_females <- gender_table["F", "1"]
+
+# Calculate the male-to-female ratio
+male_to_female_ratio <- deceased_males / deceased_females
+
+
+
+cat("The male-to-female ratio among deceased individuals in the hospital is:", male_to_female_ratio)
 ```
 # Question 5: Is there a heightened risk of mortality associated with alcohol consumption?
 ```{r}
@@ -259,9 +271,27 @@ print(chisq_test_hepatic)
 # Question 6: Among different age groups (children, adults, and senior citizens), which demographic exhibits the highest mortality rate?
 
 ```{r}
+data$AgeGroup <- ifelse(data$age < 18, "Children", ifelse(data$age < 65, "Adults", "Senior Citizens"))
+contingency_table <- table(data$AgeGroup, data$hospital_death)
+
+# Calculate chi-squared test
+chi_squared_result <- chisq.test(contingency_table)
+print(chi_squared_result)
 ```
 # Question 7: Can the presence of medical conditions like diabetes, hepatic failure, or other medical conditions impact an individual's likelihood of mortality?
 ```{r}
+data$diabetes_mellitus <- as.factor(data$diabetes_mellitus)
+data$hepatic_failure <- as.factor(data$hepatic_failure)
+model <- glm(hospital_death ~ diabetes_mellitus + hepatic_failure, data = data, family = "binomial")
+
+summary(model)
+# Chi-squared test for diabetes_mellitus
+chisq_test_diabetes <- chisq.test(table(data$diabetes_mellitus, data$hospital_death))
+print(chisq_test_diabetes)
+
+# Chi-squared test for hepatic_failure
+chisq_test_hepatic <- chisq.test(table(data$hepatic_failure, data$hospital_death))
+print(chisq_test_hepatic)
 ```
 ```
 
