@@ -1,0 +1,6 @@
+1. Is there a heightened risk of mortality associated with alcohol consumption? 
+2. Among different age groups (children, adults, and senior citizens), which demographic exhibits the highest mortality rate? 
+3. Can the presence of medical conditions like diabetes, hepatic failure, or other medical conditions impact an individual's likelihood of mortality? 
+4. What is the gender distribution of deaths in the hospital, with regard to male and female ratios?
+5. Among ethnicities, which one exhibits the highest and lowest mortality rate?
+6. Among hospitals, Which hospital receives the largest number of patients who are cured, and what are the death statistics in each of the many hospitals?
