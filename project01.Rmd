@@ -274,20 +274,30 @@ contingency_table <- table(data$AgeGroup, data$hospital_death)
 chi_squared_result <- chisq.test(contingency_table)
 print(chi_squared_result)
 ```
-# Question 5: Can the presence of medical conditions like diabetes, hepatic failure, or other medical conditions impact an individual's likelihood of mortality?
+# Question 5: Among ethnicities, which one exhibits the highest and lowest mortality rate?
 ```{r}
-data$diabetes_mellitus <- as.factor(data$diabetes_mellitus)
-data$hepatic_failure <- as.factor(data$hepatic_failure)
-model <- glm(hospital_death ~ diabetes_mellitus + hepatic_failure, data = data, family = "binomial")
 
-summary(model)
-# Chi-squared test for diabetes_mellitus
-chisq_test_diabetes <- chisq.test(table(data$diabetes_mellitus, data$hospital_death))
-print(chisq_test_diabetes)
+library(dplyr)
 
-# Chi-squared test for hepatic_failure
-chisq_test_hepatic <- chisq.test(table(data$hepatic_failure, data$hospital_death))
-print(chisq_test_hepatic)
+
+mortality_rates <- data %>%
+  group_by(ethnicity) %>%
+  summarise(
+    total_patients = n(),
+    total_deaths = sum(hospital_death),
+    mortality_rate = (total_deaths / total_patients) * 100  
+  )
+
+
+highest_mortality <- mortality_rates[which.max(mortality_rates$mortality_rate), ]
+lowest_mortality <- mortality_rates[which.min(mortality_rates$mortality_rate), ]
+
+
+cat("Ethnicity with Highest Mortality Rate: ", highest_mortality$ethnicity, "\n")
+cat("Highest Mortality Rate: ", highest_mortality$mortality_rate, "%\n")
+cat("Ethnicity with Lowest Mortality Rate: ", lowest_mortality$ethnicity, "\n")
+cat("Lowest Mortality Rate: ", lowest_mortality$mortality_rate, "%\n")
+
 ```
 ```
 
