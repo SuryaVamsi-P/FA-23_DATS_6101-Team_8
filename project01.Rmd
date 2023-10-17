@@ -12,7 +12,7 @@ output:
   #pdf_document:
     #toc: yes
     #toc_depth: '3'
---- 
+---
 
 ```{r init, include=F}
 library(ezids)
@@ -198,99 +198,6 @@ m$bmi<-transformed_data
 #cleaned_data4$age<-transformed_data1
 
 #ggplot(data.frame(x=m$age), aes(x))+geom_histogram(binwidth = 0.002, #color="black",fill="blue")+labs(title="visualization of age without outliers after transformation")
-
-
-
-# Question 1: Among different age groups (children, adults, and senior citizens), which demographic exhibits the highest mortality rate?
-```{r}
-data$AgeGroup <- ifelse(data$age < 18, "Children", ifelse(data$age < 65, "Adults", "Senior Citizens"))
-
-# Calculate the mortality rate for each age group
-mortality_table <- table(data$AgeGroup, data$hospital_death)
-
-# Calculate the mortality rates
-mortality_rate <- (mortality_table[, "1"] / rowSums(mortality_table)) * 100 
-
-# Create a dataframe for the results
-mortality_results <- data.frame(
-  AgeGroup = names(mortality_rate),
-  MortalityRate = mortality_rate
-)
-
-# Find the demographic with the highest mortality rate
-highest_mortality_group <- mortality_results[which.max(mortality_results$MortalityRate), ]
-
-barplot(mortality_results$MortalityRate, names.arg = mortality_results$AgeGroup, col = "skyblue",
-        xlab = "Age Group", ylab = "Mortality Rate (%)", main = "Mortality Rate by Age Group")
-
-# Add text to indicate the group with the highest mortality rate
-text(x = which.max(mortality_results$MortalityRate), y = highest_mortality_group$MortalityRate + 1,
-     label = paste("Highest:", round(highest_mortality_group$MortalityRate, 2), "%"), col = "red")
-
-cat("The demographic with the highest mortality rate is", highest_mortality_group$AgeGroup,
-    "with a mortality rate of", highest_mortality_group$MortalityRate, "%.")
-
-```
-# Question 2: Can the presence of medical conditions like diabetes, hepatic failure, or other medical conditions impact an individual's likelihood of mortality?
-```{r}
-data$diabetes_mellitus <- as.factor(data$diabetes_mellitus)
-data$hepatic_failure <- as.factor(data$hepatic_failure)
-
-model <- glm(hospital_death ~ diabetes_mellitus + hepatic_failure, data = data, family = "binomial")
-
-summary(model)
-
-# Chi-squared test for diabetes_mellitus
-chisq_test_diabetes <- chisq.test(table(data$diabetes_mellitus, data$hospital_death))
-print(chisq_test_diabetes)
-
-# Chi-squared test for hepatic_failure
-chisq_test_hepatic <- chisq.test(table(data$hepatic_failure, data$hospital_death))
-print(chisq_test_hepatic)
-```
-# Question 3: What is the gender distribution of deaths in the hospital, with regard to male and female ratios? 
-```{r}
-gender_table <- table(data$gender, data$hospital_death)
-
-# Extract the counts of deceased males and females
-deceased_males <- gender_table["M", "1"]
-deceased_females <- gender_table["F", "1"]
-
-# Calculate the male-to-female ratio
-male_to_female_ratio <- deceased_males / deceased_females
-
-
-
-cat("The male-to-female ratio among deceased individuals in the hospital is:", male_to_female_ratio)
-```
-
-
-# Question 4: Among ethnicities, which one exhibits the highest and lowest mortality rate?
-```{r}
-
-library(dplyr)
-
-
-mortality_rates <- data %>%
-  group_by(ethnicity) %>%
-  summarise(
-    total_patients = n(),
-    total_deaths = sum(hospital_death),
-    mortality_rate = (total_deaths / total_patients) * 100  
-  )
-
-
-highest_mortality <- mortality_rates[which.max(mortality_rates$mortality_rate), ]
-lowest_mortality <- mortality_rates[which.min(mortality_rates$mortality_rate), ]
-
-
-cat("Ethnicity with Highest Mortality Rate: ", highest_mortality$ethnicity, "\n")
-cat("Highest Mortality Rate: ", highest_mortality$mortality_rate, "%\n")
-cat("Ethnicity with Lowest Mortality Rate: ", lowest_mortality$ethnicity, "\n")
-cat("Lowest Mortality Rate: ", lowest_mortality$mortality_rate, "%\n")
-
-```
-```
 
 
 
