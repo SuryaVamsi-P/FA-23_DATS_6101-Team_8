@@ -209,7 +209,7 @@ data$AgeGroup <- ifelse(data$age < 18, "Children", ifelse(data$age < 65, "Adults
 mortality_table <- table(data$AgeGroup, data$hospital_death)
 
 # Calculate the mortality rates
-mortality_rate <- (mortality_table[, "1"] / rowSums(mortality_table)) * 100
+mortality_rate <- (mortality_table[, "1"] / rowSums(mortality_table)) * 100 
 
 # Create a dataframe for the results
 mortality_results <- data.frame(
