@@ -264,23 +264,8 @@ male_to_female_ratio <- deceased_males / deceased_females
 cat("The male-to-female ratio among deceased individuals in the hospital is:", male_to_female_ratio)
 ```
 
-# Question 4: Can the presence of medical conditions like diabetes, hepatic failure, or other medical conditions impact an individual's likelihood of mortality?
-```{r}
-data$diabetes_mellitus <- as.factor(data$diabetes_mellitus)
-data$hepatic_failure <- as.factor(data$hepatic_failure)
-model <- glm(hospital_death ~ diabetes_mellitus + hepatic_failure, data = data, family = "binomial")
 
-summary(model)
-# Chi-squared test for diabetes_mellitus
-chisq_test_diabetes <- chisq.test(table(data$diabetes_mellitus, data$hospital_death))
-print(chisq_test_diabetes)
-
-# Chi-squared test for hepatic_failure
-chisq_test_hepatic <- chisq.test(table(data$hepatic_failure, data$hospital_death))
-print(chisq_test_hepatic)
-
-```
-# Question 5: Among ethnicities, which one exhibits the highest and lowest mortality rate?
+# Question 4: Among ethnicities, which one exhibits the highest and lowest mortality rate?
 ```{r}
 
 library(dplyr)
