@@ -12,7 +12,7 @@ output:
   #pdf_document:
     #toc: yes
     #toc_depth: '3'
----
+--- 
 
 ```{r init, include=F}
 library(ezids)
