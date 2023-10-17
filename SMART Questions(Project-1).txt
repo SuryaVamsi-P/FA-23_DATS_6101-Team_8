@@ -4,6 +4,4 @@
 
 3. What is the gender distribution of deaths in the hospital, with regard to male and female ratios? 
 
-4. Can the presence of medical conditions like diabetes, hepatic failure, or other medical conditions impact an individual's likelihood of mortality?
-
-5. Among ethnicities, which one exhibits the highest and lowest mortality rate?
+4. Among ethnicities, which one exhibits the highest and lowest mortality rate?
