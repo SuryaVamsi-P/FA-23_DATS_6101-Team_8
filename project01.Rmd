@@ -248,6 +248,88 @@ ggplot(cleaned_data4, aes(x = factor(lymphoma), y = heart_rate_apache, fill = fa
   theme_minimal()
 ```
 
+```{r}
+
+
+
+
+# Box Plot
+ggplot(cleaned_data4, aes(x = factor(cirrhosis), y = bmi)) +
+  geom_boxplot() +
+  labs(title = "Box Plot cirrhosis and bmi" ,
+       x = "cirrhosis", y = "bmi") +
+  theme_minimal()
+
+# Violin Plot
+ggplot(cleaned_data4, aes(x = factor(cirrhosis), y = bmi, fill = factor(cirrhosis))) +
+  geom_violin() +
+  labs(title = "Violin Plot cirrhosis and bmi",
+       x = "cirrhosis", y = "bmi") +
+  theme_minimal()
+
+
+# Box Plot
+ggplot(cleaned_data4, aes(x = factor(hepatic_failure), y = bmi)) +
+  geom_boxplot() +
+  labs(title = "Box Plot hepatic failure and bmi",
+       x = "hepatic_failure", y = "bmi") +
+  theme_minimal()
+
+# Violin Plot
+ggplot(cleaned_data4, aes(x = factor(hepatic_failure), y = bmi, fill = factor(hepatic_failure))) +
+  geom_violin() +
+  labs(title = "Violin Plot hepatic failure and bmi",
+       x = "hepatic_failure", y = "bmi") +
+  theme_minimal()
+
+
+# Box Plot
+ggplot(cleaned_data4, aes(x = factor(diabetes_mellitus), y = bmi)) +
+  geom_boxplot() +
+  labs(title = "Box Plot diabetes_mellitus and bmi",
+       x = "diabetes_mellitus", y = "bmi") +
+  theme_minimal()
+
+# Violin Plot
+ggplot(cleaned_data4, aes(x = factor(diabetes_mellitus), y = bmi, fill = factor(diabetes_mellitus))) +
+  geom_violin() +
+  labs(title = "Violin Plot diabetes_mellitus and bmi",
+       x = "diabetes_mellitus", y = "bmi") +
+  theme_minimal()
+
+
+# Box Plot
+ggplot(cleaned_data4, aes(x = factor(leukemia), y = bmi)) +
+  geom_boxplot() +
+  labs(title = "Box Plot leukemia and bmi",
+       x = "leukemia", y = "bmi") +
+  theme_minimal()
+
+# Violin Plot
+ggplot(cleaned_data4, aes(x = factor(leukemia), y = bmi, fill = factor(leukemia))) +
+  geom_violin() +
+  labs(title = "Violin Plot leukemia and bmi",
+       x = "leukemia", y = "bmi") +
+  theme_minimal()
+
+# Box Plot
+ggplot(cleaned_data4, aes(x = factor(lymphoma), y = bmi)) +
+  geom_boxplot() +
+  labs(title = "Box Plot lymphoma and bmi",
+       x = "lymphoma", y = "bmi") +
+  theme_minimal()
+
+# Violin Plot
+ggplot(cleaned_data4, aes(x = factor(lymphoma), y = bmi, fill = factor(lymphoma))) +
+  geom_violin() +
+  labs(title = "Violin Plot lymphoma and bmi",
+       x = "lymphoma", y = "bmi") +
+  theme_minimal()
+
+
+
+ggplot(cleaned_data4, aes(x=heart_rate_apache,y=bmi, color=age))+geom_point()+labs(title="heart rate vs bmi color coded based on age")
+```
 
 
 
