@@ -161,6 +161,104 @@ nrow(cleaned_data4)
 ```
 
 ```{r}
+ggplot(cleaned_data4, aes(x = ethnicity, y = bmi, fill = ethnicity)) +
+ geom_col() +
+  labs(title = "Bar Plot considering ethnicity and bmi",
+       x = "ethnicity", y = "bmi")
+
+
+ggplot(cleaned_data4, aes(x = icu_type, fill = factor(hospital_death))) +
+  geom_bar(position = "dodge") +
+  labs(title = "Bar Plot of icu type and hospital death",
+       x = "icu_type", y = "Count") +
+  theme_minimal()
+
+
+# Box Plot
+ggplot(cleaned_data4, aes(x = factor(cirrhosis), y = heart_rate_apache)) +
+  geom_boxplot() +
+  labs(title = "Box Plot of cirrhosis and heart rate",
+       x = "cirrhosis", y = "heart_rate_apache") +
+  theme_minimal()
+
+# Violin Plot
+ggplot(cleaned_data4, aes(x = factor(cirrhosis), y = heart_rate_apache, fill = factor(cirrhosis))) +
+  geom_violin() +
+  labs(title = "Violin Plot of cirrhosis and heart rate",
+       x = "cirrhosis", y = "heart_rate_apache") +
+  theme_minimal()
+
+
+# Box Plot
+ggplot(cleaned_data4, aes(x = factor(hepatic_failure), y = heart_rate_apache)) +
+  geom_boxplot() +
+  labs(title = "Box Plot of hepatic failure and heart rate",
+       x = "hepatic_failure", y = "heart_rate_apache") +
+  theme_minimal()
+
+# Violin Plot
+ggplot(cleaned_data4, aes(x = factor(hepatic_failure), y = heart_rate_apache, fill = factor(hepatic_failure))) +
+  geom_violin() +
+  labs(title = "Violin Plot of hepatic failure and heart rate",
+       x = "hepatic_failure", y = "heart_rate_apache") +
+  theme_minimal()
+
+
+# Box Plot
+ggplot(cleaned_data4, aes(x = factor(diabetes_mellitus), y = heart_rate_apache)) +
+  geom_boxplot() +
+  labs(title = "Box Plot of diabetes and heart rate",
+       x = "diabetes_mellitus", y = "heart_rate_apache") +
+  theme_minimal()
+
+# Violin Plot
+ggplot(cleaned_data4, aes(x = factor(diabetes_mellitus), y = heart_rate_apache, fill = factor(diabetes_mellitus))) +
+  geom_violin() +
+  labs(title = "Violin Plot of diabetes and heart rate",
+       x = "diabetes_mellitus", y = "heart_rate_apache") +
+  theme_minimal()
+
+
+# Box Plot
+ggplot(cleaned_data4, aes(x = factor(leukemia), y = heart_rate_apache)) +
+  geom_boxplot() +
+  labs(title = "Box Plot of leukemia and heart rate",
+       x = "leukemia", y = "heart_rate_apache") +
+  theme_minimal()
+
+# Violin Plot
+ggplot(cleaned_data4, aes(x = factor(leukemia), y = heart_rate_apache, fill = factor(leukemia))) +
+  geom_violin() +
+  labs(title = "Violin Plot of leukemia and heart rate",
+       x = "leukemia", y = "heart_rate_apache") +
+  theme_minimal()
+
+# Box Plot
+ggplot(cleaned_data4, aes(x = factor(lymphoma), y = heart_rate_apache)) +
+  geom_boxplot() +
+  labs(title = "Box Plot of lymphoma vs heart rate",
+       x = "lymphoma", y = "heart_rate_apache") +
+  theme_minimal()
+
+# Violin Plot
+ggplot(cleaned_data4, aes(x = factor(lymphoma), y = heart_rate_apache, fill = factor(lymphoma))) +
+  geom_violin() +
+  labs(title = "Violin Plot of lymphoma vs heart rate",
+       x = "lymphoma", y = "heart_rate_apache") +
+  theme_minimal()
+```
+
+
+
+
+
+
+
+
+
+
+
+```{r}
 library(caret)
 encoding <- dummyVars("~ .", data = cleaned_data4)
 encoded_data <- predict(encoded_data_model, newdata = cleaned_data4)
@@ -198,6 +296,14 @@ m$bmi<-transformed_data
 #cleaned_data4$age<-transformed_data1
 
 #ggplot(data.frame(x=m$age), aes(x))+geom_histogram(binwidth = 0.002, #color="black",fill="blue")+labs(title="visualization of age without outliers after transformation")
+```
+
+```{r}
+```
+
+
+
+
 
 # Question 1: Among different age groups (children, adults, and senior citizens), which demographic exhibits the highest mortality rate?
 ```{r}
