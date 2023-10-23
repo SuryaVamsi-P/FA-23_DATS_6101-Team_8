@@ -331,6 +331,13 @@ ggplot(cleaned_data4, aes(x = factor(lymphoma), y = bmi, fill = factor(lymphoma)
 ggplot(cleaned_data4, aes(x=heart_rate_apache,y=bmi, color=age))+geom_point()+labs(title="heart rate vs bmi color coded based on age")
 ```
 
+```{r}
+contingency_table <- table(cleaned_data4$cirrhosis, cleaned_data4$hospital_death)
+print(contingency_table)
+
+chi_square_result <- chisq.test(table(cleaned_data4$hospital_death, cleaned_data4$cirrhosis))
+print(chi_square_result)
+```
 
 
 
