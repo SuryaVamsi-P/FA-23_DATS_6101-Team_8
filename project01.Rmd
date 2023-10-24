@@ -368,7 +368,7 @@ ggplot(cleaned_data4, aes(x = factor(lymphoma), y = bmi, fill = factor(lymphoma)
 
 
 
-ggplot(cleaned_data4, aes(x=heart_rate_apache,y=bmi, color=age))+geom_point()+labs(title="heart rate vs bmi color coded based on age")
+#ggplot(cleaned_data4, aes(x=heart_rate_apache,y=bmi, color=age))+geom_point()+labs(title="heart rate vs bmi color coded based on #age")
 ```
 
 ```{r}
@@ -436,6 +436,18 @@ transformed_data <- log(m$bmi + 1)
 print(skewness(transformed_data))
 m$bmi<-transformed_data
 ```
+
+```{r}
+ggplot(data=m,aes(x=heart_rate_apache,))+geom_boxplot(fill=c('black'))+labs(title="visualization of heart rate data",x="heart rate apache",)
+
+ggplot(data=m, aes(x= heart_rate_apache )) + geom_histogram(binwidth= 4, fill ="blue", color = "black") + labs(title = " Histogram of heart rate Content", x= "heart rate apache", y = "Frequency") 
+
+qqnorm(m$heart_rate_apache, main = "Heart rate apache Q-Q Plot", ylab="Heart rate apache", datax=FALSE)
+qqline(m$heart_rate_apache, col = "red")
+```
+
+
+
 
 ```{r}
 group_0 <- m$heart_rate_apache[m$cirrhosis == 0]
