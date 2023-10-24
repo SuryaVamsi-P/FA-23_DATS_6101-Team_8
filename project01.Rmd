@@ -377,9 +377,7 @@ group_1 <- m$heart_rate_apache[m$cirrhosis == 1]
 
 t_test_result <- t.test(group_0, group_1)
 
-# Print the t-test result
 print(t_test_result)
-
 ```
 
 
