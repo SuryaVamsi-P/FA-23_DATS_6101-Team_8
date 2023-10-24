@@ -356,6 +356,11 @@ print(contingency_table3)
 chi_square_result3 <- chisq.test(table(cleaned_data4$hospital_death, cleaned_data4$diabetes_mellitus))
 print(chi_square_result3)
 
+contingency_table4 <- table(cleaned_data4$hepatic_failure, cleaned_data4$hospital_death)
+print(contingency_table4)
+
+chi_square_result4 <- chisq.test(table(cleaned_data4$hospital_death, cleaned_data4$hepatic_failure))
+print(chi_square_result4)
 ```
 
 
