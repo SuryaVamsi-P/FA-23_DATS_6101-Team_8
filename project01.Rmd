@@ -343,6 +343,19 @@ print(contingency_table1)
 
 chi_square_result1 <- chisq.test(table(cleaned_data4$hospital_death, cleaned_data4$leukemia))
 print(chi_square_result1)
+
+contingency_table2 <- table(cleaned_data4$lymphoma, cleaned_data4$hospital_death)
+print(contingency_table2)
+
+chi_square_result2 <- chisq.test(table(cleaned_data4$hospital_death, cleaned_data4$lymphoma))
+print(chi_square_result2)
+
+contingency_table3 <- table(cleaned_data4$diabetes_mellitus, cleaned_data4$hospital_death)
+print(contingency_table3)
+
+chi_square_result3 <- chisq.test(table(cleaned_data4$hospital_death, cleaned_data4$diabetes_mellitus))
+print(chi_square_result3)
+
 ```
 
 
