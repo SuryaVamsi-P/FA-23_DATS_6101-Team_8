@@ -645,58 +645,9 @@ corrplot(cor_matrix, method = "color",  type = "upper",
          title = "Correlation Matrix", mar=c(0,0,0,0))
 ```
 
-# Question 1: 
-**Among different age groups (children, adults, and senior citizens), which demographic exhibits the highest mortality rate?**
-```{r}
 
-data<-read.csv("Dataset1.csv")
-data$AgeGroup <- ifelse(data$age < 18, "Children", ifelse(data$age < 65, "Adults", "Senior Citizens"))
-mortality_table <- table(data$AgeGroup, data$hospital_death)
-mortality_rate <- (mortality_table[, "1"] / rowSums(mortality_table)) * 100
 
-mortality_results <- data.frame(
-  AgeGroup = names(mortality_rate),
-  MortalityRate = mortality_rate
-)
-highest_mortality_group <- mortality_results[which.max(mortality_results$MortalityRate), ]
 
-barplot(mortality_results$MortalityRate, names.arg = mortality_results$AgeGroup, col = "skyblue",
-        xlab = "Age Group", ylab = "Mortality Rate (%)", main = "Mortality Rate by Age Group")
-text(x = which.max(mortality_results$MortalityRate), y = highest_mortality_group$MortalityRate + 1,
-     label = paste("Highest:", round(highest_mortality_group$MortalityRate, 2), "%"), col = "red")
-
-cat("The demographic with the highest mortality rate is", highest_mortality_group$AgeGroup,
-    "with a mortality rate of", highest_mortality_group$MortalityRate, "%.")
-
-```
-# Question 2:
-**What is the gender distribution of deaths in the hospital, with regard to male and female ratios? **
-```{r}
-deaths_by_gender <- table(data$gender[data$hospital_death == 1])
-
-male_deaths <- deaths_by_gender["M"]
-female_deaths <- deaths_by_gender["F"]
-
-male_to_female_ratio <- male_deaths / female_deaths
-
-plot_data <- data.frame(Gender = c("Male", "Female"), Deaths = c(male_deaths, female_deaths))
-ggplot(data = plot_data, aes(x = Gender, y = Deaths, fill = Gender)) +
-  geom_bar(stat = "identity", width = 0.5) +
-  labs(title = "Gender Distribution of Hospital Deaths", x = "Gender", y = "Number of Deaths") +
-  geom_text(aes(label = Deaths))
-```
-# Question 3:
-**Among ethnicities, which one exhibits the highest and lowest mortality rate?**
-```{r}
-
-mortality_rates <- tapply(data$hospital_death, data$ethnicity, function(x) mean(x) * 100)
-
-plot_data <- data.frame(Ethnicity = names(mortality_rates), Mortality_Rate = mortality_rates)
-
-ggplot(data = plot_data, aes(x = reorder(Ethnicity, -Mortality_Rate), y = Mortality_Rate)) +
-  geom_bar(stat = "identity", fill = "blue", width = 0.5) +
-  labs(title = "Mortality Rates by Ethnicity", x = "Ethnicity", y = "Mortality Rate (%)")
-```
 
 
 
