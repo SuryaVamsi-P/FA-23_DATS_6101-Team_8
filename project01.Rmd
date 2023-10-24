@@ -669,7 +669,22 @@ cat("The demographic with the highest mortality rate is", highest_mortality_grou
     "with a mortality rate of", highest_mortality_group$MortalityRate, "%.")
 
 ```
+# Question 2:
+**What is the gender distribution of deaths in the hospital, with regard to male and female ratios? **
+```{r}
+deaths_by_gender <- table(data$gender[data$hospital_death == 1])
 
+male_deaths <- deaths_by_gender["M"]
+female_deaths <- deaths_by_gender["F"]
+
+male_to_female_ratio <- male_deaths / female_deaths
+
+plot_data <- data.frame(Gender = c("Male", "Female"), Deaths = c(male_deaths, female_deaths))
+ggplot(data = plot_data, aes(x = Gender, y = Deaths, fill = Gender)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  labs(title = "Gender Distribution of Hospital Deaths", x = "Gender", y = "Number of Deaths") +
+  geom_text(aes(label = Deaths))
+```
 
 
 
