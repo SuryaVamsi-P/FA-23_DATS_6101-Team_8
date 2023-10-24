@@ -73,6 +73,16 @@ ggplot(s, aes(x = bmi), y = "") +
   theme_minimal()
 qqnorm(s$bmi, main = "bmi Q-Q Plot", ylab="bmi", datax=FALSE)
 qqline(s$bmi, col = "red")
+
+library(ggplot2)
+ggplot(data.frame(x=s$age), aes(x))+geom_histogram(binwidth = 5, color="black",fill="blue")+labs(xlab="age", ylab="frequency",title="visualization of age with outliers")
+ggplot(s, aes(x = age), y = "") +
+  geom_boxplot() +
+  labs(title = "Box Plot of age",
+       x = "age", y = "frequency distribution") +
+  theme_minimal()
+qqnorm(s$age, main = "age Q-Q Plot", ylab="age", datax=FALSE)
+qqline(s$age, col = "red")
 ```
 
 
