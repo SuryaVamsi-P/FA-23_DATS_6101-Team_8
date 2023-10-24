@@ -383,6 +383,21 @@ print(t_test_result)
 ```
 
 
+```{r}
+#install.packages("corrplot")  
+library(corrplot)
+cor_matrix <- cor(m[, c("heart_rate_apache", "bmi", "age")])
+print(cor_matrix)
+corrplot(cor_matrix, method = "color",  type = "upper", 
+         #col = col(200),     
+         tl.col = "black",  
+         tl.srt = 90,         
+         order = "hclust",    
+         addCoef.col = "black", 
+         number.cex = 0.5,  
+         title = "Correlation Matrix", mar=c(0,0,0,0))
+```
+
 
 
 
