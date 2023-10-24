@@ -669,7 +669,5 @@ text(x = which.max(mortality_results$MortalityRate), y = highest_mortality_group
 cat("The demographic with the highest mortality rate is", highest_mortality_group$AgeGroup,
     "with a mortality rate of", highest_mortality_group$MortalityRate, "%.")
 
-
-
-
+```
 
