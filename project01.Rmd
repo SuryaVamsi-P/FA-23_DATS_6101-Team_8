@@ -686,3 +686,16 @@ ggplot(data = plot_data, aes(x = Gender, y = Deaths, fill = Gender)) +
   labs(title = "Gender Distribution of Hospital Deaths", x = "Gender", y = "Number of Deaths") +
   geom_text(aes(label = Deaths))
 ```
+
+# Question 3:
+**Among ethnicities, which one exhibits the highest and lowest mortality rate?**
+```{r}
+
+mortality_rates <- tapply(data$hospital_death, data$ethnicity, function(x) mean(x) * 100)
+
+plot_data <- data.frame(Ethnicity = names(mortality_rates), Mortality_Rate = mortality_rates)
+
+ggplot(data = plot_data, aes(x = reorder(Ethnicity, -Mortality_Rate), y = Mortality_Rate)) +
+  geom_bar(stat = "identity", fill = "blue", width = 0.5) +
+  labs(title = "Mortality Rates by Ethnicity", x = "Ethnicity", y = "Mortality Rate (%)")
+```
