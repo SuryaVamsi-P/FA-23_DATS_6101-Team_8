@@ -363,6 +363,13 @@ chi_square_result4 <- chisq.test(table(cleaned_data4$hospital_death, cleaned_dat
 print(chi_square_result4)
 ```
 
+```{r}
+atest1<-aov(heart_rate_apache ~ icu_type,data=cleaned_data4)
+print(summary(atest1))
+library(TukeyC)
+hoctest<-TukeyHSD(atest1)
+hoctest
+```
 
 
 
