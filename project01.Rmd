@@ -337,6 +337,12 @@ print(contingency_table)
 
 chi_square_result <- chisq.test(table(cleaned_data4$hospital_death, cleaned_data4$cirrhosis))
 print(chi_square_result)
+
+contingency_table1 <- table(cleaned_data4$leukemia, cleaned_data4$hospital_death)
+print(contingency_table1)
+
+chi_square_result1 <- chisq.test(table(cleaned_data4$hospital_death, cleaned_data4$leukemia))
+print(chi_square_result1)
 ```
 
 
