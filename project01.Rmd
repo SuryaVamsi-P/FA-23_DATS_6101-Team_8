@@ -41,17 +41,37 @@ summary(p)
 p <- p[, !names(p) %in% c('bilirubin_apache')]
 p <- p[, !names(p) %in% c('creatinine_apache')]
 p <- p[, !names(p) %in% c('glucose_apache')]
-summary(p)
+str(p)
 ```
 
 ```{r}
 p[p == ''] <- NA
 s=na.omit(p)
-summary(p)
+#summary(p)
 s[1:10,]
-summary(s)
+#summary(s)
 nrow(s)
 ```
+
+```{r}
+library(ggplot2)
+ggplot(data.frame(x=s$heart_rate_apache), aes(x))+geom_histogram(binwidth = 10, color="black",fill="blue")+labs(xlab="heart rate apache", ylab="frequency",title="visualization of heart rate with outliers")
+ggplot(s, aes(x = heart_rate_apache), y = "") +
+  geom_boxplot() +
+  labs(title = "Box Plot of heart rate",
+       x = "heart rate apache", y = "frequency distribution") +
+  theme_minimal()
+qqnorm(s$heart_rate_apache, main = "heart rate Q-Q Plot", ylab="heart rate", datax=FALSE)
+qqline(s$heart_rate_apache, col = "red")
+```
+
+
+
+
+
+
+
+
 
 ```{r}
 c <- s$heart_rate_apache
@@ -82,10 +102,10 @@ nrow(cleaned_data)
 ```
 
 ```{r}
-library(ggplot2)
-ggplot(data.frame(x=cleaned_data$heart_rate_apache), aes(x))+geom_histogram(binwidth = 2, color="black",fill="blue")+labs(title="visualization of heart rate without outliers")
+#library(ggplot2)
+#ggplot(data.frame(x=cleaned_data$heart_rate_apache), aes(x))+geom_histogram(binwidth = 2, #color="black",fill="blue")+labs(title="visualization of heart rate without outliers")
 
-ggplot(data.frame(x=cleaned_data$bmi), aes(x))+geom_histogram(binwidth = 2, color="black",fill="blue")+labs(title="visualization of bmi with outliers")
+#ggplot(data.frame(x=cleaned_data$bmi), aes(x))+geom_histogram(binwidth = 2, color="black",fill="blue")+labs(title="visualization of #bmi with outliers")
 ```
 
 ```{r}
@@ -422,38 +442,12 @@ corrplot(cor_matrix, method = "color",  type = "upper",
          title = "Correlation Matrix", mar=c(0,0,0,0))
 ```
 
-```{r}
-ggplot(data=m,aes(x=heart_rate_apache,))+geom_boxplot(fill=c('black'))+labs(title="visualization of heart rate data",x="heart rate apache",)
-
-ggplot(data=m, aes(x= heart_rate_apache )) + geom_histogram(binwidth= 4, fill ="blue", color = "black") + labs(title = " Histogram of heart rate Content", x= "heart rate apache", y = "Frequency") 
-
-qqnorm(m$heart_rate_apache, main = "Heart rate apache Q-Q Plot", ylab="Heart rate apache", datax=FALSE)
-qqline(m$heart_rate_apache, col = "red")
-```
 
 
 
 
 
 
-```{r}
-#ggplot(data.frame(x=m$age), aes(x))+geom_histogram(binwidth = 0.002, #color="black",fill="blue")+labs(title="visualization of age without outliers before transformation")
-
-#skew_before1 <- skewness(m$age)
-#print(skew_before1)
-#transformed_data1 <- log(m$age + 1)  
-
-
-#skew_after1 <- skewness(transformed_data1)
-#print(skew_after1)
-#str(transformed_data1)
-#cleaned_data4$age<-transformed_data1
-
-#ggplot(data.frame(x=m$age), aes(x))+geom_histogram(binwidth = 0.002, #color="black",fill="blue")+labs(title="visualization of age without outliers after transformation")
-```
-
-```{r}
-```
 
 # Question 1: 
 **Among different age groups (children, adults, and senior citizens), which demographic exhibits the highest mortality rate?**
@@ -547,6 +541,3 @@ cat("Lowest Mortality Rate: ", lowest_mortality$mortality_rate, "%\n")
 
 ```
 
-#a<-exp(m$age)
-#print(a)
-```
