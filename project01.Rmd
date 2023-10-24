@@ -63,6 +63,16 @@ ggplot(s, aes(x = heart_rate_apache), y = "") +
   theme_minimal()
 qqnorm(s$heart_rate_apache, main = "heart rate Q-Q Plot", ylab="heart rate", datax=FALSE)
 qqline(s$heart_rate_apache, col = "red")
+
+library(ggplot2)
+ggplot(data.frame(x=s$bmi), aes(x))+geom_histogram(binwidth = 5, color="black",fill="blue")+labs(xlab="bmi", ylab="frequency",title="visualization of bmi with outliers")
+ggplot(s, aes(x = bmi), y = "") +
+  geom_boxplot() +
+  labs(title = "Box Plot of bmi",
+       x = "bmi", y = "frequency distribution") +
+  theme_minimal()
+qqnorm(s$bmi, main = "bmi Q-Q Plot", ylab="bmi", datax=FALSE)
+qqline(s$bmi, col = "red")
 ```
 
 
