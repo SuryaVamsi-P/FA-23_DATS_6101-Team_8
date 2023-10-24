@@ -390,11 +390,8 @@ m$bmi<-transformed_data
 ```{r}
 ```
 
-
-
-
-
-# Question 1: Among different age groups (children, adults, and senior citizens), which demographic exhibits the highest mortality rate?
+# Question 1: 
+**Among different age groups (children, adults, and senior citizens), which demographic exhibits the highest mortality rate?**
 ```{r}
 data$AgeGroup <- ifelse(data$age < 18, "Children", ifelse(data$age < 65, "Adults", "Senior Citizens"))
 
@@ -424,7 +421,8 @@ cat("The demographic with the highest mortality rate is", highest_mortality_grou
     "with a mortality rate of", highest_mortality_group$MortalityRate, "%.")
 
 ```
-# Question 2: Can the presence of medical conditions like diabetes, hepatic failure, or other medical conditions impact an individual's likelihood of mortality?
+# Question 2:
+**Can the presence of medical conditions like diabetes, hepatic failure, or other medical conditions impact an individual's likelihood of mortality?**
 ```{r}
 data$diabetes_mellitus <- as.factor(data$diabetes_mellitus)
 data$hepatic_failure <- as.factor(data$hepatic_failure)
@@ -441,7 +439,8 @@ print(chisq_test_diabetes)
 chisq_test_hepatic <- chisq.test(table(data$hepatic_failure, data$hospital_death))
 print(chisq_test_hepatic)
 ```
-# Question 3: What is the gender distribution of deaths in the hospital, with regard to male and female ratios? 
+# Question 3:
+**What is the gender distribution of deaths in the hospital, with regard to male and female ratios? ** 
 ```{r}
 gender_table <- table(data$gender, data$hospital_death)
 
@@ -456,9 +455,8 @@ male_to_female_ratio <- deceased_males / deceased_females
 
 cat("The male-to-female ratio among deceased individuals in the hospital is:", male_to_female_ratio)
 ```
-
-
-# Question 4: Among ethnicities, which one exhibits the highest and lowest mortality rate?
+# Question 4:
+**Among ethnicities, which one exhibits the highest and lowest mortality rate?**
 ```{r}
 
 library(dplyr)
