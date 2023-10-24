@@ -17,6 +17,9 @@ output:
 ```{r init, include=F}
 library(ezids)
 ```
+One of the most crucial aspects of the worldwide healthcare industry is the ability to predict patient outcomes. The ability to predict a patient's chance of survival is essential since it not only aids medical professionals in making the best decisions but also raises the bar for medical treatment as a whole. So we decided to explore the exciting field of patient survival prediction a dataset analysis to investigate the patient survival prediction.
+To start our project, we chose a dataset named "Patient Survival Prediction" from the Kaggle website that was collected during the COVID-19 pandemic. The dataset is in its raw form. Prior to moving on to feature importance, partitioning the data for training and testing, and model development, we preprocessed (EDA) to clean the dataset. This comprises taking care of missing values. 
+From analyzing the dataset, we will determine whether a patient lives or dies based on numerous parameters, like heart rate, creatinine, bilirubin levels, etc. Keeping patients' medical history in mind, we can predict the survival rate by training an ML model with the data and testing it with different information. This research topic is a practical use case scenario as it will help doctors get to know the exact health condition of a patient without running many diagnoses. This data and the model built on this can save both time and the lives of people. From this data, we can also infer the significance/ impact of Intensive Care Units and check whether they really improve a patient’s health or not.
 
 
 ```{r setup, include=FALSE}
@@ -644,8 +647,8 @@ corrplot(cor_matrix, method = "color",  type = "upper",
 
 
 
-
-
+Before embarking on our analysis of the dataset, we wanted to provide a clear path for our study so we set up some basic questions to narrow our focus and get accurate results.
+These questions are:
 
 
 
