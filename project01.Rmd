@@ -30,7 +30,7 @@ options(scientific=T, digits = 3)
 ```
 
 ```{r}
-p<-read.csv("D:\\Dataset1.csv")
+p<-read.csv("C:\\Users\\hp\\Documents\\GitHub\\FA-23_DATS_6101-Team_8\\Dataset1.csv")
 str(p)
 summary(p)
 p$ethnicity<-as.factor(p$ethnicity)
@@ -414,11 +414,6 @@ barplot(contingency_table, beside = TRUE, legend = TRUE,
 
 ```
 
-
-
-
-
-
 ```{r}
 atest1<-aov(heart_rate_apache ~ icu_type,data=cleaned_data4)
 print(summary(atest1))
@@ -426,8 +421,6 @@ library(TukeyC)
 hoctest<-TukeyHSD(atest1)
 hoctest
 ```
-
-
 
 ```{r}
 library(caret)
