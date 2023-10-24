@@ -371,6 +371,32 @@ hoctest<-TukeyHSD(atest1)
 hoctest
 ```
 
+
+
+```{r}
+library(caret)
+encoding <- dummyVars("~ .", data = cleaned_data4)
+encoded_data <- predict(encoded_data_model, newdata = cleaned_data4)
+#print(encoded_data)
+summary(encoded_data)
+str(encoded_data)
+m=as.data.frame(encoded_data)
+#print(m)
+str(m)
+```
+
+```{r}
+install.packages("e1071")
+library(e1071)
+
+skew_before <- skewness(m$bmi)
+print(skew_before)
+#Log transformation
+transformed_data <- log(m$bmi + 1)  
+print(skewness(transformed_data))
+m$bmi<-transformed_data
+```
+
 ```{r}
 group_0 <- m$heart_rate_apache[m$cirrhosis == 0]
 group_1 <- m$heart_rate_apache[m$cirrhosis == 1]
@@ -397,33 +423,6 @@ corrplot(cor_matrix, method = "color",  type = "upper",
 ```
 
 
-
-
-
-
-```{r}
-library(caret)
-encoding <- dummyVars("~ .", data = cleaned_data4)
-encoded_data <- predict(encoded_data_model, newdata = cleaned_data4)
-#print(encoded_data)
-summary(encoded_data)
-str(encoded_data)
-m=as.data.frame(encoded_data)
-#print(m)
-str(m)
-```
-
-```{r}
-install.packages("e1071")
-library(e1071)
-
-skew_before <- skewness(m$bmi)
-print(skew_before)
-#Log transformation
-transformed_data <- log(m$bmi + 1)  
-print(skewness(transformed_data))
-m$bmi<-transformed_data
-```
 
 ```{r}
 #ggplot(data.frame(x=m$age), aes(x))+geom_histogram(binwidth = 0.002, #color="black",fill="blue")+labs(title="visualization of age without outliers before transformation")
