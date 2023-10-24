@@ -645,6 +645,30 @@ corrplot(cor_matrix, method = "color",  type = "upper",
          title = "Correlation Matrix", mar=c(0,0,0,0))
 ```
 
+# Question 1: 
+**Among different age groups (children, adults, and senior citizens), which demographic exhibits the highest mortality rate?**
+```{r}
+
+data<-read.csv("Dataset1.csv")
+data$AgeGroup <- ifelse(data$age < 18, "Children", ifelse(data$age < 65, "Adults", "Senior Citizens"))
+mortality_table <- table(data$AgeGroup, data$hospital_death)
+mortality_rate <- (mortality_table[, "1"] / rowSums(mortality_table)) * 100
+
+mortality_results <- data.frame(
+  AgeGroup = names(mortality_rate),
+  MortalityRate = mortality_rate
+)
+highest_mortality_group <- mortality_results[which.max(mortality_results$MortalityRate), ]
+
+barplot(mortality_results$MortalityRate, names.arg = mortality_results$AgeGroup, col = "skyblue",
+        xlab = "Age Group", ylab = "Mortality Rate (%)", main = "Mortality Rate by Age Group")
+text(x = which.max(mortality_results$MortalityRate), y = highest_mortality_group$MortalityRate + 1,
+     label = paste("Highest:", round(highest_mortality_group$MortalityRate, 2), "%"), col = "red")
+
+cat("The demographic with the highest mortality rate is", highest_mortality_group$AgeGroup,
+    "with a mortality rate of", highest_mortality_group$MortalityRate, "%.")
+
+```
 
 
 
