@@ -422,6 +422,18 @@ corrplot(cor_matrix, method = "color",  type = "upper",
          title = "Correlation Matrix", mar=c(0,0,0,0))
 ```
 
+```{r}
+ggplot(data=m,aes(x=heart_rate_apache,))+geom_boxplot(fill=c('black'))+labs(title="visualization of heart rate data",x="heart rate apache",)
+
+ggplot(data=m, aes(x= heart_rate_apache )) + geom_histogram(binwidth= 4, fill ="blue", color = "black") + labs(title = " Histogram of heart rate Content", x= "heart rate apache", y = "Frequency") 
+
+qqnorm(m$heart_rate_apache, main = "Heart rate apache Q-Q Plot", ylab="Heart rate apache", datax=FALSE)
+qqline(m$heart_rate_apache, col = "red")
+```
+
+
+
+
 
 
 ```{r}
