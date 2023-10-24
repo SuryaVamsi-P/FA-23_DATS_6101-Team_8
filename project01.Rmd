@@ -447,7 +447,24 @@ qqline(m$heart_rate_apache, col = "red")
 ```
 
 
+```{r}
+ggplot(data=m,aes(x=bmi,))+geom_boxplot(fill=c('black'))+labs(title="visualization of bmi data",x="bmi",)
 
+ggplot(data=m, aes(x= bmi )) + geom_histogram(binwidth= 0.08, fill ="blue", color = "black") + labs(title = " Histogram of bmi Content", x= "bmi", y = "Frequency") 
+
+qqnorm(m$bmi, main = "bmi Q-Q Plot", ylab="bmi", datax=FALSE)
+qqline(m$bmi, col = "red")
+
+```
+
+```{r}
+ggplot(data=m,aes(x=age,))+geom_boxplot(fill=c('black'))+labs(title="visualization of age data",x="age",)
+
+ggplot(data=m, aes(x= age )) + geom_histogram(binwidth= 5, fill ="blue", color = "black") + labs(title = " Histogram of age Content", x= "age", y = "Frequency") 
+
+qqnorm(m$age, main = "age Q-Q Plot", ylab="age", datax=FALSE)
+qqline(m$age, col = "red")
+```
 
 ```{r}
 group_0 <- m$heart_rate_apache[m$cirrhosis == 0]
