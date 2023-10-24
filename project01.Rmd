@@ -1,5 +1,5 @@
 ---
-title: "Project 1 Team 8"
+title: "Project 1 Team 8 - Patient Survival Prediction (EDA)"
 # date: "today"
 #date: "`r Sys.Date()`"
 output:
@@ -29,20 +29,52 @@ options(scientific=T, digits = 3)
 # ‘scipen’: integer. 
 ```
 
+
+
+
+
+The ability to predict a patient's chance of survival is essential since it not only aids medical professionals in making the best decisions but also raises the bar for medical treatment as a whole. So we decided to explore the exciting field of patient survival prediction. We chose the dataset from the Kaggle website. The data was collected during the COVID-19 pandemic. The dataset is in its raw form. Prior to moving on to feature importance, partitioning the data for training and testing, and model development, we have pre processed (EDA) the data to clean it. This comprises taking care of missing values, outliers, visualization etc. From analyzing the dataset, we will determine whether a patient lives or dies based on numerous parameters, like heart rate, creatinine, bilirubin levels, etc. Keeping patients' medical history in mind, we can predict the survival rate by training an ML model with the data and testing it with different information. This research topic is a practical use case scenario as it will help doctors get to know the exact health condition of a patient without running many diagnoses. This data and the model built on this can save both time and the lives of people. From this data, we can also infer the significance/ impact of Intensive Care Units and check whether they really improve a patient’s health or not.
+
+
+
+
+
+
+Understanding data:
+
+We can understand our data like mean, maximum, minimum etc of each column using the “summary” function in R. By using the “str” function, the structure of the data can be analysed. The structure functions returns the output which tells us about the data type of each column as wel as the total number of rows and columns in the dataset. This way we could analyse our data, and from we decided to change the character variables such as “ethnicity”, “gender” and icu type to factor variables, since they have various types or levels in them. This way we can analyse the summary statistics of our data. From the output we can gather that there are roughly 91,000  rows with 17 columns.
+
+
+
 ```{r}
 p<-read.csv("C:\\Users\\hp\\Documents\\GitHub\\FA-23_DATS_6101-Team_8\\Dataset1.csv")
-str(p)
-summary(p)
+print(str(p))
+summary((p))
 p$ethnicity<-as.factor(p$ethnicity)
 p$gender<-as.factor(p$gender)
 p$gender<-as.factor(p$icu_type)
-summary(p)
+#summary(p)
 
 p <- p[, !names(p) %in% c('bilirubin_apache')]
 p <- p[, !names(p) %in% c('creatinine_apache')]
 p <- p[, !names(p) %in% c('glucose_apache')]
 str(p)
 ```
+
+Cleaning the data:
+
+One of the most important steps in the exploratory data analysis is data cleaning. It is vital to understand the data and check if there are any missing values or outliers in the data. The presence of these may affect the distribution and lead to inaccurate results during the model building process. The presence of outliers pull the collective mean towards themselves because of their extreme values which may lead to inefficient understanding of the data. In most cases missing values in data may lead to biased results. Hence, handling these outliers and missing values is the first and most significant step in eda. 
+
+
+Identifying NA’s
+
+We can identify the missing values in our data using the summary function in R. It gives the count of NA’s in every column. If we replace the blank spaces as NA’s we can find the total number of these occurrences. There are a lot of ways to handle this. We can either impute the missing values with mean or mode if the column has levels (ex. Factor variable with ratings 1,2,3,4 etc.,) or we could remove the columns which contain the most NA’s only if it is approved by the domain expert that this column won’t have much impact on the data even if we remove it . Another way is to remove the rows which contain the missing values only if the number of rows removed is a amounts to negligible percent of the whole data as we can’t remove half of the data because it contains NA’s because it will be futile to build a model with the less number of inputs without considering all cases.
+
+
+Handling NA’s
+
+In our project, we have removed some columns such as “bilirubin apache”, “creatinine apache” etc which do not concern our SMART questions and which have the most number of NA’s. After this we have removed the rows which contained the rest of the NA’s. The final data after this process came down to roughly 82,000 rows out of 90,000 with 14 columns. Since we thought the amount of NA’s removed were only a small insignificant portion of data, we went ahead with the removal process. 
+
 
 ```{r}
 p[p == ''] <- NA
@@ -52,6 +84,9 @@ s[1:10,]
 #summary(s)
 nrow(s)
 ```
+
+
+Plots before outlier removal
 
 ```{r}
 library(ggplot2)
@@ -87,8 +122,22 @@ qqline(s$age, col = "red")
 
 
 
+Identifying outliers
+
+To identify the outliers in this data, we can use visualization techniques such as plots namely, histograms, box plots, Q-Q plots etc. The box and qq plots are accurate than most in showing the outliers and their impact on the data. These plots are capable in showing the skewness of the distribution as well. The box plots show the inter quartile ranges as well along with the median of data apart from indicating the outlier presence.  
 
 
+In our project, we have used histograms, qq plots and box plots in visualizing the outliers. We’ve plotted charts of data with and without outliers to understand and assess the impact of outliers. Since, it is suitable to plot charts for only continuous variables we have used the above mentioned visualization techniques on columns like “bmi”, “heart rate apache”, and “age”.  From the histogram of heart rate column we could infer that, the distribution was bi modal since it has two peaks. We can observe that the heart rate is increasing at first and then decrasing in the interval of 0-60 and following the same pattern from 100-150. The box and qq plots indicated that outliers are present by showing the circle dots/indications at the ends.  These plots demonstrate the count, frequency distribution and theoretical quantiles pertaining to the data.  From the histogram of “bmi” column with outliers, it is evident that the graph is right skewed (as most of the data is to the left leaving the tail to the right). From this, we can observe that most of the people have bmi ranging from 0-40.  The box as well as the median line are to the left in the box plot indicating skewness towards right. The data points  at the end of the qq plot are towards the upper position from the qq line indicating right skewness with outliers at both ends. Whereas, if we observe the histogram of age variable, we can infer that the data is left skewed (as most of the data is to the right leaving the tail to the left). 
+This means, most of the data in the dataset concerns people with age fifty and higher. The box plot is also towards the right with outliers towards the left indicating left skewed data distribution. Even the qq plot is indicating the same distribution with data points falling below the qq line with outliers at both ends.
+
+
+
+
+
+
+Handling Outliers 
+
+In our project we have used the Inter Quartile Range (IQR) method pinpoint the exact outliers and remove them if necessary. This method identifies outliers by calculating the difference between the first and third quartiles of the data at first (ie., IQR). These are the 25th percentile and 75th percentile of data respectively. Now we calculate lower and upper bounds as Q1 - 1.5 * IQR and Q3 + 1.5 * IQR respectively. The values which are less than the lower bound or greater than the upper bound are considered to be outliers and the rest of the data points fall in the measure of the bounds. The outliers can be handled by either imputation or by removal. Since the total number of outliers which we identified did not constitute a major part of the data, so we’ve removed them. This way we’ve removed the outliers from three columns, heart rate, bmi and age. Now, after the outlier removal, the structure of the data was represented as 82,00 rows with fourteen columns.
 
 
 
@@ -105,15 +154,15 @@ lower_bound <- q1 - 1.5 * iqr_value
 upper_bound <- q3 + 1.5 * iqr_value
 
 
-outliers <- c < lower_bound | c > upper_bound
+outliers <- s[c < lower_bound | c > upper_bound, ]
 
 
-print("Outliers:")
-print(c[outliers])
+#print("Outliers:")
+#print(outliers)
 
-print("Lower Bound:")
+print("Lower Bound heart rate:")
 print(lower_bound)
-print("Upper Bound:")
+print("Upper Bound heart rate:")
 print(upper_bound)
 
 cleaned_data <- s[!(s$heart_rate_apache %in% outliers$heart_rate_apache),]
@@ -146,13 +195,13 @@ upper_boundbmi <- q3bmi + 1.5 * iqr_valuebmi
 outliersbmi <- cleaned_data[c3 < lower_boundbmi | c3 > upper_boundbmi, ]
 
 
-print("Outliers:")
-print(outliersbmi)
+#print("Outliers:")
+#print(outliersbmi)
 
 
-print("Lower Bound:")
+print("Lower Bound bmi:")
 print(lower_boundbmi)
-print("Upper Bound:")
+print("Upper Bound bmi:")
 print(upper_boundbmi)
 
 
@@ -182,13 +231,13 @@ upper_boundage <- q3age + 1.5 * iqr_valueage
 outliersage <- cleaned_data3[c4 < lower_boundage | c4 > upper_boundage, ]
 
 
-print("Outliers:")
-print(outliersage)
+#print("Outliers:")
+#print(outliersage)
 
 
-print("Lower Bound:")
+print("Lower Bound age:")
 print(lower_boundage)
-print("Upper Bound:")
+print("Upper Bound age:")
 print(upper_boundage)
 
 
@@ -199,6 +248,15 @@ cleaned_data4 <-cleaned_data3[!(cleaned_data3$age %in% outliersage$age),]
 nrow(cleaned_data4)
 
 ```
+
+Plots for assessing relationships between variables
+
+We’ve used bar plots, box plots and violin plots to understand the different variables.
+Firstly, a bar plot was made considering bmi and ethnicity colour coded by ethnicity. It was found that Caucasian people have the highest bmi compared to people with other ethnicities. The second highest bmi was observed in African American people. This way, the bmi was inferred for people from various ethnicities. The dataset consists of a column named  “icu_type”. Contrary to popular belief, the type of icu in which the patient is admitted actually matters regarding the health status of the patient. Hence, a bar plot was made to understand the relation between various types of icu and the death rate in patients when admitted in them. From this plot it was understood that, surgical icu has the least number of deaths compared to other icu’s. This practical use case inference is vital as it involves the well being of a person.
+Since heart rate is an important factor in assessing a person’s health, plots between heart rate and diseases like cirrhosis, lymphoma etc., were made. From the plots between cirrhosis and heart rate it was observed that, heart rate of people with cirrhosis has increased compared to people without cirrhosis. The same pattern was observed in the cases of hepatic failure, leukemia and lymphoma when compared against heart rate. Whereas, people with diabetes were observed to have decreased or low heart rate compared to people without diabetes.
+Plotting of bmi with the diseases showed that the bmi was low or decreased in patients suffering from cirrhosis, leukemia and lymphoma. Whereas, patients with diabetes have higher bmi / the bmi has increased in the cases of patients suffering from diabetes. The violin plot also represents a higher density of people with increased bmi who have diabetes. But hepatic failure seems to have no impact on bmi.
+
+
 
 ```{r}
 ggplot(cleaned_data4, aes(x = ethnicity, y = bmi, fill = ethnicity)) +
@@ -371,6 +429,23 @@ ggplot(cleaned_data4, aes(x = factor(lymphoma), y = bmi, fill = factor(lymphoma)
 #ggplot(cleaned_data4, aes(x=heart_rate_apache,y=bmi, color=age))+geom_point()+labs(title="heart rate vs bmi color coded based on #age")
 ```
 
+Hypothesis testing
+
+Contingency table and chi square test
+
+Contingency tables have been used for this project to understand the relationship between two categorical variables (ie., strings, in our case “yes” or “no” data columns). 
+Hospital death is the target column of our dataset. Hence, to assess the impact of various diseases such as diabetes, cirrhosis etc., on the hospital death, contingency table was drawn. This table shows the counts or frequencies of observations. A chi square test of this contingency table will reveal whether there is any dependence between the variables.
+Null Hypothesis H0: There is no dependence between variables.
+Alternate Hypothesis H1: There is dependence between variables. 
+After doing the chi square tests, it was observed that, there is significant association/dependence between variables like cirrhosis, leukemia, lymphoma, and diabetes against hospital death. This can be inferred from the low p value ie., less than 0.05 (95 percent confidence interval). Here, we are rejecting the null hypothesis. A higher p value indicates independence whereas low p value indicates dependence. Hence, factors like cirrhosis and diabetes are responsible, or have an impact on whether a person lives or dies.
+
+
+
+
+
+
+
+
 ```{r}
 contingency_table <- table(cleaned_data4$cirrhosis, cleaned_data4$hospital_death)
 print(contingency_table)
@@ -414,6 +489,18 @@ barplot(contingency_table, beside = TRUE, legend = TRUE,
 
 ```
 
+
+Anova test (Analysis of Variance) & post hoc Tukey HSD test
+
+Anova test is used to compare means of different groups. Here, the anova test has been done on heart rate based on different icu groups. We can find out whether the means of these groups have any difference or not. If they have difference we can infer that icu type has impact on heart rate and  icu’s vary in functionality which may help in improving a patient’s health.
+Null Hypothesis H0: There is no difference between group means.
+Alternate Hypothesis H1: Atleast one group mean is different from others.
+The output of the Anova test is representing a low p value ie., < 0.05 (95 percent confidence interval), which indicates that atleast one group mean varies from the others. Hence, we are rejecting the null hypothesis. To confirm this and find out which group mean varies, post hoc test such as Tukey’s HSD (honestly significant difference) test has been done.  Since, the p adjusted values of most of the group means is less than 0.05, it can be inferred that more than one group mean or means of multiple groups have significant difference.
+
+
+
+
+
 ```{r}
 atest1<-aov(heart_rate_apache ~ icu_type,data=cleaned_data4)
 print(summary(atest1))
@@ -422,10 +509,20 @@ hoctest<-TukeyHSD(atest1)
 hoctest
 ```
 
+
+
+Encoding categorical variables
+
+Encoding refers to converting categorical values to numeric values. Not all methodologies can work with categorical variables especially while building an ML model. Hence, it is important to maintain all data in the form of numerics.  Encoding works with zeroes and ones. It converts categorical variables into a set of binary columns, where each category or label in the original variable is represented as a binary column (0 or 1).
+Here, we’ve used “dummyvars” function from the “caret” package for encoding. After encoding the dataset, it is observed that “ethnicity”, “gender” and “icu_type” have been encoded.
+
+
+
+
 ```{r}
 library(caret)
 encoding <- dummyVars("~ .", data = cleaned_data4)
-encoded_data <- predict(encoded_data_model, newdata = cleaned_data4)
+encoded_data <- predict(encoding, newdata = cleaned_data4)
 #print(encoded_data)
 summary(encoded_data)
 str(encoded_data)
@@ -434,8 +531,19 @@ m=as.data.frame(encoded_data)
 str(m)
 ```
 
+
+An attempt at reducing skewness in bmi column
+
+Log transformation
+
+Even after outlier removal, the shape of bmi column distribution was right skewed. To bring to a normal distribution, log transformation has been applied which uses logarithm (ex. Log(x)) function on the column.
+From the output, it can be inferred that the bmi distribution has been converted to a perfect normal distribution (bell curve). Tried this on heart rate and age columns as well but instead of a decreased skewness the output demonstrated a higher skewness compared to pre transformation. Since forceful transformation of data to fit into a normal distribution is not advisable in all scenarios, we have not employed/used this transformed bmi column in the eda process.
+
+
+
+
 ```{r}
-install.packages("e1071")
+#install.packages("e1071")
 library(e1071)
 
 skew_before <- skewness(m$bmi)
@@ -445,6 +553,15 @@ transformed_data <- log(m$bmi + 1)
 print(skewness(transformed_data))
 m$bmi<-transformed_data
 ```
+
+
+Plotting after outlier management
+
+Plotting of histogram after outlier management showed that there was not much impact or change in skewness even after removing the outliers. This means that the data is built in this way. So, we can infer that most of the data points in data are actually in the skewness region and this is how that data is distributed. The skewness hasn’t changed in the three columns even after removing the outliers. The reason for this is that the data itself is present/collected in this way. So there is nothing wrong with the data.
+
+
+
+
 
 ```{r}
 ggplot(data=m,aes(x=heart_rate_apache,))+geom_boxplot(fill=c('black'))+labs(title="visualization of heart rate data",x="heart rate apache",)
@@ -475,6 +592,19 @@ qqnorm(m$age, main = "age Q-Q Plot", ylab="age", datax=FALSE)
 qqline(m$age, col = "red")
 ```
 
+
+T-test
+
+A t-test is done to check whether the means of two samples (columns) have any difference.
+Here, the two sample t test has been done on heart rate against cirrhosis=0 and cirrhosis=1.
+Null Hypothesis H0: There is no difference between means.
+Alternate Hypothesis H1: There is significant difference between means.
+The output of the test revealed a p value ie., < 0.05 (95 percent confidence interval). Hence, we are rejecting the null hypothesis and stating that there is significant difference between the means. Since, there is significant difference between the means we can infer that cirrhosis has an impact on heart rate. This output followed the same pattern while comparing heart rate and other factors like diabetes, leukemia, hepatic failure and lymphoma.
+
+
+
+
+
 ```{r}
 group_0 <- m$heart_rate_apache[m$cirrhosis == 0]
 group_1 <- m$heart_rate_apache[m$cirrhosis == 1]
@@ -483,6 +613,18 @@ t_test_result <- t.test(group_0, group_1)
 
 print(t_test_result)
 ```
+
+
+
+Correlation Matrix
+
+A correlation matrix is used to identify relationships between multiple variables. Its outcome can be inferred in three ways., 
+Positive correlation : Variables are directly proportional
+Zero correlation : There is no relation/dependency between variables
+Negative correlation : Variables are inversely proportional.
+The matrix has been drawn with heart rate, age and bmi as variables. 
+Age: has negative correlation with heart rate and bmi
+Bmi: has negative correlation with heart rate 
 
 
 ```{r}
@@ -506,96 +648,4 @@ corrplot(cor_matrix, method = "color",  type = "upper",
 
 
 
-
-# Question 1: 
-**Among different age groups (children, adults, and senior citizens), which demographic exhibits the highest mortality rate?**
-```{r}
-data$AgeGroup <- ifelse(data$age < 18, "Children", ifelse(data$age < 65, "Adults", "Senior Citizens"))
-
-# Calculate the mortality rate for each age group
-mortality_table <- table(data$AgeGroup, data$hospital_death)
-
-# Calculate the mortality rates
-mortality_rate <- (mortality_table[, "1"] / rowSums(mortality_table)) * 100
-
-# Create a dataframe for the results
-mortality_results <- data.frame(
-  AgeGroup = names(mortality_rate),
-  MortalityRate = mortality_rate
-)
-
-# Find the demographic with the highest mortality rate
-highest_mortality_group <- mortality_results[which.max(mortality_results$MortalityRate), ]
-
-barplot(mortality_results$MortalityRate, names.arg = mortality_results$AgeGroup, col = "skyblue",
-        xlab = "Age Group", ylab = "Mortality Rate (%)", main = "Mortality Rate by Age Group")
-
-# Add text to indicate the group with the highest mortality rate
-text(x = which.max(mortality_results$MortalityRate), y = highest_mortality_group$MortalityRate + 1,
-     label = paste("Highest:", round(highest_mortality_group$MortalityRate, 2), "%"), col = "red")
-
-cat("The demographic with the highest mortality rate is", highest_mortality_group$AgeGroup,
-    "with a mortality rate of", highest_mortality_group$MortalityRate, "%.")
-
-```
-# Question 2:
-**Can the presence of medical conditions like diabetes, hepatic failure, or other medical conditions impact an individual's likelihood of mortality?**
-```{r}
-data$diabetes_mellitus <- as.factor(data$diabetes_mellitus)
-data$hepatic_failure <- as.factor(data$hepatic_failure)
-
-model <- glm(hospital_death ~ diabetes_mellitus + hepatic_failure, data = data, family = "binomial")
-
-summary(model)
-
-# Chi-squared test for diabetes_mellitus
-chisq_test_diabetes <- chisq.test(table(data$diabetes_mellitus, data$hospital_death))
-print(chisq_test_diabetes)
-
-# Chi-squared test for hepatic_failure
-chisq_test_hepatic <- chisq.test(table(data$hepatic_failure, data$hospital_death))
-print(chisq_test_hepatic)
-```
-# Question 3:
-**What is the gender distribution of deaths in the hospital, with regard to male and female ratios? ** 
-```{r}
-gender_table <- table(data$gender, data$hospital_death)
-
-# Extract the counts of deceased males and females
-deceased_males <- gender_table["M", "1"]
-deceased_females <- gender_table["F", "1"]
-
-# Calculate the male-to-female ratio
-male_to_female_ratio <- deceased_males / deceased_females
-
-
-
-cat("The male-to-female ratio among deceased individuals in the hospital is:", male_to_female_ratio)
-```
-# Question 4:
-**Among ethnicities, which one exhibits the highest and lowest mortality rate?**
-```{r}
-
-library(dplyr)
-
-
-mortality_rates <- data %>%
-  group_by(ethnicity) %>%
-  summarise(
-    total_patients = n(),
-    total_deaths = sum(hospital_death),
-    mortality_rate = (total_deaths / total_patients) * 100  
-  )
-
-
-highest_mortality <- mortality_rates[which.max(mortality_rates$mortality_rate), ]
-lowest_mortality <- mortality_rates[which.min(mortality_rates$mortality_rate), ]
-
-
-cat("Ethnicity with Highest Mortality Rate: ", highest_mortality$ethnicity, "\n")
-cat("Highest Mortality Rate: ", highest_mortality$mortality_rate, "%\n")
-cat("Ethnicity with Lowest Mortality Rate: ", lowest_mortality$ethnicity, "\n")
-cat("Lowest Mortality Rate: ", lowest_mortality$mortality_rate, "%\n")
-
-```
 
