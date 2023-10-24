@@ -403,6 +403,22 @@ chi_square_result4 <- chisq.test(table(cleaned_data4$hospital_death, cleaned_dat
 print(chi_square_result4)
 ```
 
+
+```{r}
+barplot(contingency_table, beside = TRUE, legend = TRUE,
+        col = c("lightblue", "lightgreen"),
+        main = "Bar Chart for cirrhosis vs hospital death", 
+        names.arg = c("Binary1=0", "Binary1=1"),
+        xlab = "Cirrhosis", ylab = "Hospital death")
+
+
+```
+
+
+
+
+
+
 ```{r}
 atest1<-aov(heart_rate_apache ~ icu_type,data=cleaned_data4)
 print(summary(atest1))
