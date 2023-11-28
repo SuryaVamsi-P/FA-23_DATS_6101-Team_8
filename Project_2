@@ -1,0 +1,122 @@
+---
+title: "Project 2"
+author: "Aroub Halawani"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    code_folding: hide
+    number_sections: false
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+```{r init, include=F}
+data <- read.csv("Dataset.csv")
+head(hospital_data)
+```
+
+1- How does the presence of diabetes mellitus correlate with age? Is diabetes a risk factor for hospital
+death in older patients, and does age significantly impact the chance of developing diabetes?
+```{r setup, include=FALSE}
+library(dplyr)
+
+# Check the structure of the dataset
+str(hospital_data)
+correlation_age_diabetes <- cor(hospital_data$age, hospital_data$diabetes_mellitus)
+cat("Correlation between Age and Diabetes Mellitus:", correlation_age_diabetes, "\n")
+hospital_data <- hospital_data %>%
+  mutate(age_group = ifelse(age >= 65, "Older", "Younger"))
+cross_table <- table(hospital_data$diabetes_mellitus, hospital_data$age_group, hospital_data$hospital_death)
+print(cross_table)
+```
+
+2- Are there any particular illnesses or risk factors (such as leukemia, cirrhosis, or diabetes mellitus) that
+are closely linked to hospital deaths?
+
+```{r}
+selected_columns <- hospital_data %>%
+  select(hospital_death, leukemia, cirrhosis, diabetes_mellitus)
+model_leukemia <- glm(hospital_death ~ leukemia, data = selected_columns, family = "binomial")
+model_cirrhosis <- glm(hospital_death ~ cirrhosis, data = selected_columns, family = "binomial")
+model_diabetes <- glm(hospital_death ~ diabetes_mellitus, data = selected_columns, family = "binomial")
+
+summary(model_leukemia)
+summary(model_cirrhosis)
+summary(model_diabetes)
+```
+3- Which underlying medical disorders account for the majority of hospital deaths among patients over the
+age of 70? Are there any trends in the kinds of illnesses that cause death in this particular age range?
+```{r}
+
+older_patients <- hospital_data %>%
+  filter(age_group == "Older")
+
+selected_columns <- older_patients %>%
+  select(hospital_death, leukemia, cirrhosis, diabetes_mellitus)  # Add more diseases as needed
+
+death_counts <- colSums(selected_columns)
+
+sorted_death_counts <- sort(death_counts, decreasing = TRUE)
+
+
+print(sorted_death_counts)
+```
+4- What is the mortality rate in the dataset between patients under 65 and those above 65? Are the
+causes of death for these age groups significantly different from one another?
+
+```{r}
+hospital_data <- hospital_data %>%
+  mutate(age_group = ifelse(age < 65, "Under 65", "Above 65"))
+
+contingency_table <- table(hospital_data$hospital_death, hospital_data$age_group)
+
+
+chi_square_test <- chisq.test(contingency_table)
+print(chi_square_test)
+
+
+```
+5- Which ICU types are most prevalent in the dataset, and does the type of ICU affect the risk of hospital
+death?
+
+```{r}
+
+icu_type_counts <- table(hospital_data$icu_type)
+print(icu_type_counts)
+
+logistic_model <- glm(hospital_death ~ icu_type, data = hospital_data, family = "binomial")
+
+summary(logistic_model)
+
+```
+6- What differences exist between patients who survive and those who do not in terms of the distribution
+of "BMI" (body mass index)? Does a person's BMI have any bearing on hospital mortality?
+
+```{r}
+survived_bmi <- hospital_data$hospital_death == 0  # Assuming 0 represents survived patients
+not_survived_bmi <- hospital_data$hospital_death == 1  # Assuming 1 represents not survived patients
+
+summary(hospital_data$BMI[survived_bmi])  # Summary stats for survived patients' BMI
+summary(hospital_data$BMI[not_survived_bmi])  # Summary stats for not survived patients' BMI
+
+boxplot(bmi ~ hospital_death, data = hospital_data, xlab = "Hospital Mortality", ylab = "BMI")
+
+t_test_result <- t.test(hospital_data$bmi[survived_bmi], hospital_data$BMI[not_survived_bmi])
+print(t_test_result)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
