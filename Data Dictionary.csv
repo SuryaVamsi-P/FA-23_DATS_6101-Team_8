@@ -13,7 +13,7 @@ demographic,hospital_admit_source,None,string,The location of the patient prior 
 demographic,icu_admit_source,None,string,The location of the patient prior to being admitted to the unit,Operating room
 demographic,icu_admit_type,None,string,The type of unit admission for the patient,Cardiothoracic
 demographic,icu_id,None,integer,A unique identifier for the unit to which the patient was admitted,None
-demographic,icu_stay_type,None,string,,None
+demographic,icu_stay_type,None,string,,None 
 demographic,icu_type,None,string,A classification which indicates the type of care the unit is capable of providing,Neurological ICU
 demographic,pre_icu_los_days,Days,numeric,The length of stay of the patient between hospital admission and unit admission,3.5
 demographic,readmission_status,None,binary,Whether the current unit stay is the second (or greater) stay at an ICU within the same hospitalization,0
