@@ -24,7 +24,7 @@ death in older patients, and does age significantly impact the chance of develop
 ```{r setup, include=FALSE}
 library(dplyr)
 
-# Check the structure of the dataset
+# Check the structure of the dataset 
 str(hospital_data)
 correlation_age_diabetes <- cor(hospital_data$age, hospital_data$diabetes_mellitus)
 cat("Correlation between Age and Diabetes Mellitus:", correlation_age_diabetes, "\n")
