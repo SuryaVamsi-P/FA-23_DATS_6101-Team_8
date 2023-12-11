@@ -39,3 +39,13 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r}
 g<-read.csv("C:\\Users\\hp\\Documents\\GitHub\\FA-23_DATS_6101-Team_8\\Dataset.csv")
 ```
+
+
+```{r}
+total_missing_values <- colSums(is.na(g) | g == "", na.rm = TRUE)
+#print(total_missing_values)
+
+columns_to_drop <- names(total_missing_values[total_missing_values > 21500])
+g <- g[, !(names(g) %in% columns_to_drop)]
+
+```
