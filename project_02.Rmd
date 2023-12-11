@@ -49,3 +49,15 @@ columns_to_drop <- names(total_missing_values[total_missing_values > 21500])
 g <- g[, !(names(g) %in% columns_to_drop)]
 
 ```
+
+
+```{r}
+par(mfrow = c(2, 2))  # Set up a 2x2 grid for multiple plots
+for (col in names(g)) {
+  if (is.numeric(g[[col]])) {
+    hist(g[[col]], main = col, col = "lightblue", border = "black")
+    qqnorm(g[[col]], main = col)
+    qqline(g[[col]])
+  }
+}
+```
