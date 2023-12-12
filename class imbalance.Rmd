@@ -1,0 +1,234 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-12-12"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+
+```{r}
+h<-read.csv("C:\\Users\\hp\\Documents\\GitHub\\FA-23_DATS_6101-Team_8\\Dataset.csv")
+print(colSums(h))
+```
+
+```{r}
+library(DMwR)
+
+target_variable <- "hospital_death"
+
+# Convert int and chr columns to numeric, except the target variable
+int_cols <- sapply(g, is.integer) & names(g) != target_variable
+char_cols <- sapply(g, is.character)
+g[, int_cols | char_cols] <- lapply(g[, int_cols | char_cols], as.numeric)
+
+# Remove non-target factor columns
+factor_cols <- sapply(g, is.factor) & names(g) != target_variable
+numeric_data <- g[, !factor_cols]
+
+# Apply SMOTE on the modified dataset
+balanced_data <- tryCatch({
+    SMOTE(as.formula(paste(target_variable, "~ .")), data = numeric_data, perc.over = 100, k = 5)
+}, error=function(e) {
+    print(e)
+})
+
+# Check if SMOTE was successful
+if (!inherits(balanced_data, "error")) {
+    # Check the balance of the target variable after SMOTE
+    table(balanced_data[, target_variable])
+} else {
+    print("Error in applying SMOTE")
+}
+
+
+
+```
+
+
+
+
+
+
+
+
+
+```{r}
+library(DMwR)
+
+target_variable <- "hospital_death"
+
+# Convert int and chr columns to numeric, except the target variable
+int_cols <- sapply(g, is.integer) & names(g) != target_variable
+char_cols <- sapply(g, is.character)
+g[, int_cols | char_cols] <- lapply(g[, int_cols | char_cols], as.numeric)
+
+# Remove non-target factor columns
+factor_cols <- sapply(g, is.factor) & names(g) != target_variable
+numeric_data <- g[, !factor_cols]
+
+# Check initial class distribution
+print(table(g[, target_variable]))
+
+# Apply SMOTE
+balanced_data <- tryCatch({
+    SMOTE(as.formula(paste(target_variable, "~ .")), data = numeric_data, perc.over = 400, k = 5)
+}, error=function(e) {
+    print(e)
+})
+
+# Check if SMOTE was successful
+if (!inherits(balanced_data, "error")) {
+    # Check the balance of the target variable after SMOTE
+    new_distribution <- table(balanced_data[, target_variable])
+    print(new_distribution)
+    
+    # Check total number of rows
+    print(nrow(balanced_data))
+} else {
+    print("Error in applying SMOTE")
+}
+
+```
+
+
+```{r}
+# Assuming 'g' is your original dataset and 'balanced_data' is your SMOTE output
+
+# Identify the factor columns in the original dataset
+factor_cols <- sapply(g, is.factor)
+
+# For each factor column, randomly assign values from the original dataset to the synthetic rows
+for(col in names(g)[factor_cols]) {
+    set.seed(123)  # Ensure reproducibility
+    # Randomly sample from the original factor column for the number of synthetic rows
+    additional_factor_data <- sample(g[[col]], nrow(balanced_data) - nrow(g), replace = TRUE)
+    
+    # Combine original and synthetic factor data
+    balanced_data[[col]] <- c(g[[col]], additional_factor_data)
+}
+
+# Check the structure of the final dataset
+str(balanced_data)
+
+```
+
+
+
+
+```{r}
+
+selected_columns <- c("hospital_death", "arf_apache", "intubated_apache", "ventilated_apache", "aids", "cirrhosis", "diabetes_mellitus", "hepatic_failure", "immunosuppression", "leukemia", "lymphoma", "solid_tumor_with_metastasis",  "elective_surgery", "apache_post_operative",
+ "heart_rate_apache",         "temp_apache",               "d1_diasbp_min",             "d1_diasbp_noninvasive_min",
+  "d1_heartrate_max",          "d1_mbp_min",                "d1_mbp_noninvasive_min",    "d1_resprate_max",          
+ "d1_spo2_min",               "d1_sysbp_min",              "d1_sysbp_noninvasive_min",  "d1_temp_min",              
+ "h1_diasbp_min",             "h1_diasbp_noninvasive_min", "h1_heartrate_max",          "h1_mbp_min",               
+ "h1_mbp_noninvasive_min",    "h1_resprate_max",           "h1_resprate_min",           "h1_spo2_min",              
+ "h1_sysbp_min",              "h1_sysbp_noninvasive_min",  "d1_bun_max",                "d1_bun_min",               
+ "d1_calcium_min",            "d1_creatinine_max",         "d1_creatinine_min",         "d1_hco3_max",              
+ "d1_hco3_min",               "d1_potassium_max",          "d1_wbc_max",                "d1_wbc_min", "map_apache", "bmi",  "gcs_eyes_apache", "gcs_motor_apache", "gcs_unable_apache", "gcs_verbal_apache"  )
+
+# Create a new dataframe with selected columns
+new_dataframe3 <- balanced_data[, selected_columns, drop = FALSE]
+```
+
+
+```{r}
+
+categorical_columns <- c("ethnicity", "gender", "hospital_admit_source", "icu_admit_source", "apache_3j_bodysystem", "apache_2_bodysystem", "icu_stay_type", "icu_type")
+
+# Encode categorical variables using one-hot encoding
+encoded_data1 <- model.matrix(~ . - 1, data = balanced_data[, categorical_columns])
+
+# Convert the encoded data to a data frame
+encoded_data1 <- as.data.frame(encoded_data1)
+
+
+# Append non-categorical columns to the encoded data
+new_dataframe3 <- cbind(new_dataframe3, encoded_data1)
+```
+
+
+```{r}
+# Split the data into training and testing sets (80/20 split)
+split_index <- createDataPartition(new_dataframe3$hospital_death, p = 0.8, list = FALSE)
+training_data3 <- new_dataframe3[split_index, ]
+testing_data3 <- new_dataframe3[-split_index, ]
+
+```
+
+
+
+
+
+
+```{r}
+library(rpart)
+
+# Convert 'hospital_death' to a factor
+training_data3$hospital_death <- as.factor(training_data3$hospital_death)
+testing_data3$hospital_death <- as.factor(testing_data3$hospital_death)
+
+# Build a decision tree model
+model_tree <- rpart(hospital_death ~ ., data = training_data3, method = "class")
+
+# Make predictions on the testing data
+predictions_tree <- predict(model_tree, newdata = testing_data3, type = "class")
+
+# Print the confusion matrix
+conf_matrix_tree <- table(predictions_tree, testing_data3$hospital_death)
+print("Confusion Matrix:")
+print(conf_matrix_tree)
+
+# Calculate and print accuracy
+accuracy_tree <- sum(diag(conf_matrix_tree)) / sum(conf_matrix_tree)
+cat("Accuracy:", accuracy_tree, "\n")
+
+
+```
+
+
+
+```{r}
+library(caret)
+library(rpart)  # For decision trees
+
+# Assuming your dataset is 'final_data' and the target variable is 'hospital_death'
+set.seed(123)  # Set a random seed for reproducibility
+
+# Define the control method for cross-validation
+fitControl <- trainControl(method = "cv",  # Cross-validation
+                           number = 10)    # Number of folds
+
+# Train the model using cross-validation
+model <- train(hospital_death ~ ., 
+               data = training_data3, 
+               method = "rpart",  # Decision tree
+               trControl = fitControl)
+
+# View the results
+print(model)
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
