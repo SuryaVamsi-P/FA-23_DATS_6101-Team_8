@@ -472,3 +472,22 @@ cat("Accuracy:", accuracy_tree, "\n")
 
 
 
+```{r}
+library(ROSE)
+library(caret)  
+l
+g[ ,sapply(g, is.character)] <- lapply(g[ ,sapply(g, is.character)], as.factor)
+
+set.seed(123)  
+splitIndex <- createDataPartition(g$hospital_death, p = .80, list = FALSE, times = 1)
+training_set <- g[splitIndex, ]
+testing_set <- g[-splitIndex, ]
+
+rose_data <- ROSE(hospital_death ~ ., data = training_set, seed = 1)$data
+
+table(rose_data$hospital_death)
+
+```
+
+
+
