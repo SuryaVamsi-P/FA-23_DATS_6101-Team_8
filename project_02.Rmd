@@ -549,5 +549,50 @@ cat("Accuracy:", accuracy_tree, "\n")
 ```
 
 
+```{r}
+library(caret)
+library(rpart)
+
+names(training_data4) <- make.names(names(training_data4), unique = TRUE)
+names(testing_data4) <- make.names(names(testing_data4), unique = TRUE)
+
+if (any(is.na(training_data4)) || any(is.na(testing_data4))) {
+    stop("NA values found in the datasets")
+}
+
+set.seed(123)
+tuned_model <- train(hospital_death ~ ., 
+                     data = training_data4, 
+                     method = "rpart",
+                     trControl = trainControl(method = "cv", number = 10),
+                     tuneGrid = expand.grid(.cp = seq(0.01, 0.05, by = 0.02)))
+
+predictions <- predict(tuned_model, newdata = testing_data4)
+
+conf_matrix <- confusionMatrix(predictions, testing_data4$hospital_death)
+
+print(conf_matrix$table)
+
+tp <- conf_matrix$table[2, 2]  # True Positives
+tn <- conf_matrix$table[1, 1]  # True Negatives
+fp <- conf_matrix$table[1, 2]  # False Positives
+fn <- conf_matrix$table[2, 1]  # False Negatives
+
+cat("True Positives (TP):", tp, "\n")
+cat("True Negatives (TN):", tn, "\n")
+cat("False Positives (FP):", fp, "\n")
+cat("False Negatives (FN):", fn, "\n")
+
+accuracy <- sum(diag(conf_matrix$table)) / sum(conf_matrix$table)
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+
+cat("Accuracy:", accuracy, "\n")
+cat("Precision:", precision, "\n")
+cat("Recall:", recall, "\n")
+
+```
+
+
 
 
