@@ -80,6 +80,12 @@ for (col in names(g)[factor_vars]) {
   mode_value <- names(sort(table(g[[col]]), decreasing = TRUE))[1]
   g[[col]][is.na(g[[col]])] <- mode_value
 }
+numeric_columns_to_impute <- c("apache_2_diagnosis", "map_apache", "resprate_apache", "apache_4a_hospital_death_prob", "apache_4a_icu_death_prob")
+
+for (col in numeric_columns_to_impute) {
+  mode_val <- names(sort(table(g[[col]], useNA = "ifany"), decreasing = TRUE))[1]
+  g[[col]][is.na(g[[col]])] <- ifelse(is.na(g[[col]]), mode_val, g[[col]])
+}
 ```
 
 
@@ -92,5 +98,20 @@ for (col in columns_to_impute) {
     g[[col]][is.na(g[[col]])] <- median_value
   }
 }
+```
+
+
+```{r}
+columns_to_impute1 <- c("height", "heart_rate_apache", "temp_apache", "d1_diasbp_max", "d1_diasbp_min", "d1_diasbp_noninvasive_max", "d1_diasbp_noninvasive_min", "d1_heartrate_max", "d1_heartrate_min", "d1_mbp_max", "d1_mbp_min", "d1_mbp_noninvasive_min", "d1_resprate_min", "d1_sysbp_max", "d1_sysbp_min", "d1_sysbp_noninvasive_max", "d1_sysbp_noninvasive_min", "h1_diasbp_min", "h1_diasbp_noninvasive_min", "h1_heartrate_max", "h1_heartrate_min", "h1_mbp_max", "h1_mbp_min", "h1_mbp_noninvasive_max", "h1_mbp_noninvasive_min", " h1_resprate_min", "h1_sysbp_max", "h1_sysbp_min", "h1_sysbp_noninvasive_max", "h1_sysbp_noninvasive_min", "d1_calcium_max", "d1_calcium_min", "d1_hco3_max", "d1_hco3_min", "d1_hemaglobin_max", "d1_hemaglobin_min", "d1_hematocrit_max", "d1_hematocrit_min", "d1_potassium_min", "d1_sodium_max", "d1_wbc_max", "d1_wbc_min", "hematocrit_apache", "sodium_apache")
+
+# Loop through specified columns and impute mean
+for (col in columns_to_impute1) {
+  # Check if the column is numeric
+  if (is.numeric(g[[col]])) {
+    mean_value <- mean(g[[col]], na.rm = TRUE)
+    g[[col]][is.na(g[[col]])] <- mean_value
+  }
+}
+g[["h1_resprate_min"]][is.na(g[["h1_resprate_min"]])] <- mean(g[["h1_resprate_min"]], na.rm = TRUE)
 ```
 
