@@ -143,3 +143,34 @@ selected_features <- names(which(abs(correlation_with_target) > 0.1))
 print(selected_features)
 ```
 
+
+```{r}
+library(MASS)
+library(dplyr)
+library(caret)
+
+g <- g[, sapply(g, function(x) !(is.factor(x) && length(unique(x)) < 2))]
+
+g <- g %>%
+  mutate_if(function(x) is.factor(x) && length(unique(x)) == 2, function(x) as.numeric(as.factor(x)) - 1)
+
+
+dummy_model <- dummyVars(" ~ .", data = g)
+dataset_transformed <- predict(dummy_model, newdata = g)
+dataset_transformed <- data.frame(dataset_transformed)
+target <- g$hospital_death
+predictors <- dataset_transformed[, names(dataset_transformed) != 'hospital_death']
+
+model_data <- cbind(predictors, target)
+
+
+set.seed(123) 
+stepwise_model <- stepAIC(glm(target ~ ., data = model_data, family = binomial), 
+                          scope = list(lower = formula(glm(target ~ 1, data = model_data)), 
+                                       upper = formula(glm(target ~ ., data = model_data))),
+                          direction = "forward", 
+                          trace = FALSE)
+
+summary(stepwise_model)
+```
+
