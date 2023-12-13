@@ -121,3 +121,298 @@ print(tuned_model)
 
 
 ```
+
+
+```{r}
+library(caret)
+library(rpart)
+
+# Assuming 'training_data3' and 'testing_data3' are your datasets
+
+# Preprocess your datasets to ensure consistency, especially for categorical variables
+# [Apply preprocessing steps here, e.g., one-hot encoding, factorizing, etc.]
+
+# Ensure all column names are valid and consistent
+names(training_data3) <- make.names(names(training_data3), unique = TRUE)
+names(testing_data3) <- make.names(names(testing_data3), unique = TRUE)
+
+# Check for NA values
+if (any(is.na(training_data3)) || any(is.na(testing_data3))) {
+    stop("NA values found in the datasets")
+}
+
+# Fit the model
+set.seed(123)
+tuned_model <- train(hospital_death ~ ., 
+                     data = training_data3, 
+                     method = "rpart",
+                     trControl = trainControl(method = "cv", number = 10),
+                     tuneGrid = expand.grid(.cp = seq(0.01, 0.05, by = 0.02)))
+
+# Generate predictions on the testing data
+predictions <- predict(tuned_model, newdata = testing_data3)
+
+# Create a confusion matrix
+conf_matrix <- confusionMatrix(predictions, testing_data3$hospital_death)
+
+# Print the confusion matrix
+print(conf_matrix$table)
+
+# Extract elements of the confusion matrix
+tp <- conf_matrix$table[2, 2]  # True Positives
+tn <- conf_matrix$table[1, 1]  # True Negatives
+fp <- conf_matrix$table[1, 2]  # False Positives
+fn <- conf_matrix$table[2, 1]  # False Negatives
+
+# Print TP, TN, FP, FN
+cat("True Positives (TP):", tp, "\n")
+cat("True Negatives (TN):", tn, "\n")
+cat("False Positives (FP):", fp, "\n")
+cat("False Negatives (FN):", fn, "\n")
+
+# Calculate and print accuracy, precision, and recall
+accuracy <- sum(diag(conf_matrix$table)) / sum(conf_matrix$table)
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+
+cat("Accuracy:", accuracy, "\n")
+cat("Precision:", precision, "\n")
+cat("Recall:", recall, "\n")
+
+```
+
+
+```{r}
+library(pROC)
+
+# Assuming 'tuned_model' is your trained model
+# and 'testing_data3' is your test dataset
+
+# Generate probability predictions on the testing data
+prob_predictions <- predict(tuned_model, newdata = testing_data3, type = "prob")
+
+# Extract the probabilities for the positive class
+# Assuming the positive class is 'X1'
+prob_positive_class <- prob_predictions[, "X1"]
+
+# Calculate the ROC curve and AUC
+roc_result <- roc(testing_data3$hospital_death, prob_positive_class)
+auc_value <- auc(roc_result)
+
+# Print the AUC value
+print(auc_value)
+
+```
+
+
+```{r}
+library(pROC)
+
+# Generate probability predictions on the testing data
+# Assuming 'tuned_model' is your trained model and 'testing_data3' is your test dataset
+prob_predictions <- predict(tuned_model, newdata = testing_data3, type = "prob")
+
+# Extract the probabilities for the positive class
+# Replace 'X1' with the actual name of your positive class if different
+prob_positive_class <- prob_predictions[, "X1"]
+
+# Calculate the ROC curve
+roc_result <- roc(testing_data3$hospital_death, prob_positive_class)
+
+# Plot the ROC curve
+plot(roc_result, main="ROC Curve", col="#1c61b6")
+abline(a=0, b=1, lty=2, col="red")  # Adds a diagonal line representing random chance
+
+```
+
+
+
+```{r}
+library(caret)
+set.seed(123)
+
+# Split the data into training and testing sets (80/20 split)
+#split_index <- createDataPartition(new_dataframe2$hospital_death, p = 0.8, list = FALSE)
+#training_data <- new_dataframe2[split_index, ]
+#testing_data <- new_dataframe2[-split_index, ]
+
+# Train a logistic regression model
+library(glmnet)
+
+# Fit the model
+model <- glmnet(
+  as.matrix(training_data3[, -which(names(training_data3) %in% c("hospital_death"))]),
+  as.factor(training_data3$hospital_death),
+  family = "binomial"
+)
+
+# Make predictions on the testing set
+predictions <- predict(
+  model,
+  newx = as.matrix(testing_data3[, -which(names(testing_data3) %in% c("hospital_death"))]),
+  type = "response"
+)
+
+# Extract the predicted probabilities for the positive class
+positive_class_prob <- predictions[, 2]
+
+# Convert predicted probabilities to binary predictions
+binary_predictions <- ifelse(positive_class_prob > 0.5, 1, 0)
+
+# Check the lengths of vectors
+if (length(binary_predictions) == nrow(testing_data3)) {
+  # Evaluate model performance
+  confusion_matrix <- table(binary_predictions, testing_data3$hospital_death)
+  accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+  print(confusion_matrix)
+  print(paste("Accuracy:", accuracy))
+} else {
+  print("Lengths of vectors do not match.")
+}
+```
+
+
+
+```{r}
+library(caret)
+library(xgboost)
+library(pROC)
+
+# Convert the target variable to valid factor levels
+training_data3$hospital_death <- factor(training_data3$hospital_death)
+levels(training_data3$hospital_death) <- make.names(levels(training_data3$hospital_death))
+
+testing_data3$hospital_death <- factor(testing_data3$hospital_death)
+levels(testing_data3$hospital_death) <- make.names(levels(testing_data3$hospital_death))
+
+# Ensure classProbs is set to TRUE for ROC analysis
+fitControl <- trainControl(method = "cv",
+                           number = 10,
+                           classProbs = TRUE, # Enable class probabilities
+                           summaryFunction = twoClassSummary)
+
+# Define a grid for hyperparameter tuning
+grid <- expand.grid(nrounds = c(100, 200),
+                    max_depth = c(3, 6),
+                    eta = c(0.01, 0.1),
+                    gamma = 0,
+                    colsample_bytree = 1,
+                    min_child_weight = 1,
+                    subsample = 1)
+
+# Train the model using XGBoost with the training dataset
+set.seed(123)
+tuned_model <- train(hospital_death ~ ., 
+                     data = training_data3, 
+                     method = "xgbTree", 
+                     trControl = fitControl,
+                     tuneGrid = grid,
+                     metric = "ROC")
+
+# Print the tuned model's details
+print(tuned_model)
+
+# Make predictions on the test dataset
+test_predictions <- predict(tuned_model, newdata = testing_data3, type = "prob")
+
+# Calculate the ROC curve and AUC for the test set
+roc_curve <- roc(response = testing_data3$hospital_death, predictor = test_predictions[, "X1"])
+auc_value <- auc(roc_curve)
+
+# Print the AUC value
+print(auc_value)
+
+# Plot the ROC curve
+plot(roc_curve)
+abline(a=0, b=1, lty=2, col="red")
+
+```
+
+
+
+```{r}
+library(xgboost)
+library(caret) # for creating dummy variables
+library(pROC) # for ROC and AUC
+
+# Assuming 'training_data3' and 'testing_data3' are your datasets
+
+# Store 'hospital_death' as a separate vector and then remove it from the data frames
+training_target <- as.numeric(as.factor(training_data3$hospital_death)) - 1
+testing_target <- as.numeric(as.factor(testing_data3$hospital_death)) - 1
+
+training_data3 <- training_data3[, names(training_data3) != "hospital_death"]
+testing_data3 <- testing_data3[, names(testing_data3) != "hospital_death"]
+
+# Convert factors and character columns to dummy variables
+training_data3 <- data.frame(model.matrix(~ ., data = training_data3))
+testing_data3 <- data.frame(model.matrix(~ ., data = testing_data3))
+
+# Prepare matrices for xgboost
+training_matrix <- as.matrix(training_data3)
+testing_matrix <- as.matrix(testing_data3)
+
+# Create DMatrix objects
+dtrain <- xgb.DMatrix(data = training_matrix, label = training_target)
+dtest <- xgb.DMatrix(data = testing_matrix, label = testing_target)
+
+# Define parameters for the xgboost model
+params <- list(
+    booster = "gbtree",
+    objective = "binary:logistic",
+    eta = 0.1,
+    max_depth = 6,
+    eval_metric = "auc"
+)
+
+# Number of boosting rounds
+nrounds <- 100
+
+# Train the model
+set.seed(123)
+xgb_model <- xgb.train(
+    params = params,
+    data = dtrain,
+    nrounds = nrounds,
+    watchlist = list(eval = dtest, train = dtrain),
+    verbose = 1
+)
+
+# Make predictions and evaluate the model
+predictions <- predict(xgb_model, dtest)
+
+# Convert predictions to binary class output (0 or 1)
+binary_predictions <- ifelse(predictions > 0.5, 1, 0)
+
+# Create a confusion matrix
+conf_matrix <- table(Predicted = binary_predictions, Actual = testing_target)
+print(conf_matrix)
+
+# Calculate accuracy, precision, recall, etc.
+accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
+precision <- conf_matrix[2, 2] / sum(conf_matrix[2, ])
+recall <- conf_matrix[2, 2] / sum(conf_matrix[, 2])
+
+# Print the results
+print(paste("Accuracy:", accuracy))
+print(paste("Precision:", precision))
+print(paste("Recall:", recall))
+
+# Calculate the ROC curve and AUC
+roc_curve <- roc(response = testing_target, predictor = predictions)
+auc_value <- auc(roc_curve)
+
+# Print the AUC value
+print(paste("AUC:", auc_value))
+
+# Plot the ROC curve
+plot(roc_curve, main = "ROC Curve", col = "#1c61b6")
+abline(a = 0, b = 1, lty = 2, col = "red")
+
+
+```
+
+
+```{r}
+str(training_data3)
+```
