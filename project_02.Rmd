@@ -475,7 +475,7 @@ cat("Accuracy:", accuracy_tree, "\n")
 ```{r}
 library(ROSE)
 library(caret)  
-l
+
 g[ ,sapply(g, is.character)] <- lapply(g[ ,sapply(g, is.character)], as.factor)
 
 set.seed(123)  
@@ -488,6 +488,66 @@ rose_data <- ROSE(hospital_death ~ ., data = training_set, seed = 1)$data
 table(rose_data$hospital_death)
 
 ```
+
+
+```{r}
+selected_columns <- c("hospital_death", "arf_apache", "intubated_apache", "ventilated_apache", "aids", "cirrhosis", "diabetes_mellitus", "hepatic_failure", "immunosuppression", "leukemia", "lymphoma", "solid_tumor_with_metastasis",  "elective_surgery", "apache_post_operative",
+ "heart_rate_apache",         "temp_apache",               "d1_diasbp_min",             "d1_diasbp_noninvasive_min",
+  "d1_heartrate_max",          "d1_mbp_min",                "d1_mbp_noninvasive_min",    "d1_resprate_max",          
+ "d1_spo2_min",               "d1_sysbp_min",              "d1_sysbp_noninvasive_min",  "d1_temp_min",              
+ "h1_diasbp_min",             "h1_diasbp_noninvasive_min", "h1_heartrate_max",          "h1_mbp_min",               
+ "h1_mbp_noninvasive_min",    "h1_resprate_max",           "h1_resprate_min",           "h1_spo2_min",              
+ "h1_sysbp_min",              "h1_sysbp_noninvasive_min",  "d1_bun_max",                "d1_bun_min",               
+ "d1_calcium_min",            "d1_creatinine_max",         "d1_creatinine_min",         "d1_hco3_max",              
+ "d1_hco3_min",               "d1_potassium_max",          "d1_wbc_max",                "d1_wbc_min", "map_apache", "bmi",  "gcs_eyes_apache", "gcs_motor_apache", "gcs_unable_apache", "gcs_verbal_apache"  )
+
+# Create a new dataframe with selected columns
+new_dataframe4 <- rose_data[, selected_columns, drop = FALSE]
+```
+
+
+
+```{r}
+
+categorical_columns <- c("ethnicity", "gender", "hospital_admit_source", "icu_admit_source", "apache_3j_bodysystem", "apache_2_bodysystem", "icu_stay_type", "icu_type")
+
+encoded_data2 <- model.matrix(~ . - 1, data = rose_data[, categorical_columns])
+
+encoded_data2 <- as.data.frame(encoded_data2)
+
+new_dataframe4 <- cbind(new_dataframe4, encoded_data2)
+```
+
+
+
+```{r}
+split_index <- createDataPartition(new_dataframe4$hospital_death, p = 0.8, list = FALSE)
+training_data4 <- new_dataframe4[split_index, ]
+testing_data4 <- new_dataframe4[-split_index, ]
+
+```
+
+
+```{r}
+
+library(rpart)
+
+training_data4$hospital_death <- as.factor(training_data4$hospital_death)
+testing_data4$hospital_death <- as.factor(testing_data4$hospital_death)
+
+model_tree <- rpart(hospital_death ~ ., data = training_data4, method = "class")
+
+predictions_tree <- predict(model_tree, newdata = testing_data4, type = "class")
+
+conf_matrix_tree <- table(predictions_tree, testing_data4$hospital_death)
+print("Confusion Matrix:")
+print(conf_matrix_tree)
+
+accuracy_tree <- sum(diag(conf_matrix_tree)) / sum(conf_matrix_tree)
+cat("Accuracy:", accuracy_tree, "\n")
+
+```
+
 
 
 

@@ -56,8 +56,8 @@ new_dataframe4 <- cbind(new_dataframe4, encoded_data2)
 
 ```{r}
 split_index <- createDataPartition(new_dataframe4$hospital_death, p = 0.8, list = FALSE)
-training_data3 <- new_dataframe4[split_index, ]
-testing_data3 <- new_dataframe4[-split_index, ]
+training_data4 <- new_dataframe4[split_index, ]
+testing_data4 <- new_dataframe4[-split_index, ]
 
 ```
 
@@ -67,17 +67,17 @@ testing_data3 <- new_dataframe4[-split_index, ]
 library(rpart)
 
 # Convert 'hospital_death' to a factor
-training_data3$hospital_death <- as.factor(training_data3$hospital_death)
-testing_data3$hospital_death <- as.factor(testing_data3$hospital_death)
+training_data4$hospital_death <- as.factor(training_data4$hospital_death)
+testing_data4$hospital_death <- as.factor(testing_data4$hospital_death)
 
 # Build a decision tree model
-model_tree <- rpart(hospital_death ~ ., data = training_data3, method = "class")
+model_tree <- rpart(hospital_death ~ ., data = training_data4, method = "class")
 
 # Make predictions on the testing data
-predictions_tree <- predict(model_tree, newdata = testing_data3, type = "class")
+predictions_tree <- predict(model_tree, newdata = testing_data4, type = "class")
 
 # Print the confusion matrix
-conf_matrix_tree <- table(predictions_tree, testing_data3$hospital_death)
+conf_matrix_tree <- table(predictions_tree, testing_data4$hospital_death)
 print("Confusion Matrix:")
 print(conf_matrix_tree)
 
@@ -95,10 +95,10 @@ library(caret)
 library(rpart)
 
 # Ensure all column names are valid
-names(training_data3) <- make.names(names(training_data3), unique = TRUE)
+names(training_data4) <- make.names(names(training_data4), unique = TRUE)
 
 # Check for NA values
-if (any(is.na(training_data3))) {
+if (any(is.na(training_data4))) {
     stop("NA values found in training_data3")
 }
 
@@ -111,7 +111,7 @@ grid <- expand.grid(.cp = seq(0.01, 0.05, by = 0.02))
 # Fit a simpler model
 set.seed(123)
 tuned_model <- train(hospital_death ~ ., 
-                     data = training_data3, 
+                     data = training_data4, 
                      method = "rpart",
                      trControl = fitControl,
                      tuneGrid = grid)
@@ -133,27 +133,27 @@ library(rpart)
 # [Apply preprocessing steps here, e.g., one-hot encoding, factorizing, etc.]
 
 # Ensure all column names are valid and consistent
-names(training_data3) <- make.names(names(training_data3), unique = TRUE)
-names(testing_data3) <- make.names(names(testing_data3), unique = TRUE)
+names(training_data4) <- make.names(names(training_data4), unique = TRUE)
+names(testing_data4) <- make.names(names(testing_data4), unique = TRUE)
 
 # Check for NA values
-if (any(is.na(training_data3)) || any(is.na(testing_data3))) {
+if (any(is.na(training_data4)) || any(is.na(testing_data4))) {
     stop("NA values found in the datasets")
 }
 
 # Fit the model
 set.seed(123)
 tuned_model <- train(hospital_death ~ ., 
-                     data = training_data3, 
+                     data = training_data4, 
                      method = "rpart",
                      trControl = trainControl(method = "cv", number = 10),
                      tuneGrid = expand.grid(.cp = seq(0.01, 0.05, by = 0.02)))
 
 # Generate predictions on the testing data
-predictions <- predict(tuned_model, newdata = testing_data3)
+predictions <- predict(tuned_model, newdata = testing_data4)
 
 # Create a confusion matrix
-conf_matrix <- confusionMatrix(predictions, testing_data3$hospital_death)
+conf_matrix <- confusionMatrix(predictions, testing_data4$hospital_death)
 
 # Print the confusion matrix
 print(conf_matrix$table)
@@ -189,14 +189,14 @@ library(pROC)
 # and 'testing_data3' is your test dataset
 
 # Generate probability predictions on the testing data
-prob_predictions <- predict(tuned_model, newdata = testing_data3, type = "prob")
+prob_predictions <- predict(tuned_model, newdata = testing_data4, type = "prob")
 
 # Extract the probabilities for the positive class
 # Assuming the positive class is 'X1'
 prob_positive_class <- prob_predictions[, "X1"]
 
 # Calculate the ROC curve and AUC
-roc_result <- roc(testing_data3$hospital_death, prob_positive_class)
+roc_result <- roc(testing_data4$hospital_death, prob_positive_class)
 auc_value <- auc(roc_result)
 
 # Print the AUC value
@@ -210,14 +210,14 @@ library(pROC)
 
 # Generate probability predictions on the testing data
 # Assuming 'tuned_model' is your trained model and 'testing_data3' is your test dataset
-prob_predictions <- predict(tuned_model, newdata = testing_data3, type = "prob")
+prob_predictions <- predict(tuned_model, newdata = testing_data4, type = "prob")
 
 # Extract the probabilities for the positive class
 # Replace 'X1' with the actual name of your positive class if different
 prob_positive_class <- prob_predictions[, "X1"]
 
 # Calculate the ROC curve
-roc_result <- roc(testing_data3$hospital_death, prob_positive_class)
+roc_result <- roc(testing_data4$hospital_death, prob_positive_class)
 
 # Plot the ROC curve
 plot(roc_result, main="ROC Curve", col="#1c61b6")
