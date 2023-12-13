@@ -203,3 +203,41 @@ for (feature in features_to_test) {
 
 print(chi_square_results)
 ```
+
+
+
+```{r}
+library(glmnet)
+
+specific_features <- c("arf_apache", "intubated_apache", "ventilated_apache", "aids", "cirrhosis", "diabetes_mellitus", "hepatic_failure", "immunosuppression", "leukemia", "lymphoma", "solid_tumor_with_metastasis",  "gender", "elective_surgery", "apache_post_operative", "age","bun_apache","creatinine_apache", "hospital_admit_source", "icu_type", "icu_admit_source", "glucose_apache", "gcs_eyes_apache", "gcs_verbal_apache", "gcs_unable_apache", "icu_stay_type",
+ "heart_rate_apache",         "temp_apache",               "d1_diasbp_min",             "d1_diasbp_noninvasive_min",
+  "d1_heartrate_max",          "d1_mbp_min",                "d1_mbp_noninvasive_min",    "d1_resprate_max",          
+ "d1_spo2_min",               "d1_sysbp_min",              "d1_sysbp_noninvasive_min",  "d1_temp_min",              
+ "h1_diasbp_min",             "h1_diasbp_noninvasive_min", "h1_heartrate_max",          "h1_mbp_min",               
+ "h1_mbp_noninvasive_min",    "h1_resprate_max",           "h1_resprate_min",           "h1_spo2_min",              
+ "h1_sysbp_min",              "h1_sysbp_noninvasive_min",  "d1_bun_max",                "d1_bun_min",               
+ "d1_calcium_min",            "d1_creatinine_max",         "d1_creatinine_min",         "d1_hco3_max",              
+ "d1_hco3_min",               "d1_potassium_max",          "d1_wbc_max",                "d1_wbc_min", "map_apache")
+
+missing_features <- specific_features[!specific_features %in% names(g)]
+if (length(missing_features) > 0) {
+    print(paste("Error: The following features are missing in the dataframe 'g':", paste(missing_features, collapse = ", ")))
+} else {
+    X <- as.matrix(g[, specific_features])
+
+    y <- as.factor(g$hospital_death)
+
+    cv_lasso <- cv.glmnet(X, y, family = "binomial", alpha = 1)
+
+    best_lambda_lasso <- cv_lasso$lambda.min
+
+    final_lasso <- glmnet(X, y, family = "binomial", alpha = 1, lambda = best_lambda_lasso)
+
+    coef_lasso <- predict(final_lasso, s = best_lambda_lasso, type = "coefficients")
+
+    selected_features_lasso <- rownames(coef_lasso)[which(coef_lasso != 0)]
+
+    print("Selected Features from Lasso: ")
+    print(selected_features_lasso)
+}
+```
