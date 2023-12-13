@@ -123,3 +123,23 @@ if (any(is.na(g))) {
 }
 ```
 
+
+
+
+```{r}
+binary_target <- g$hospital_death
+
+correlation_with_target <- sapply(names(g), function(feature) {
+  if (is.numeric(g[[feature]])) {
+    cor(g[[feature]], binary_target)
+  } else {
+    
+    NA
+  }
+})
+
+selected_features <- names(which(abs(correlation_with_target) > 0.1))
+
+print(selected_features)
+```
+
