@@ -231,4 +231,52 @@ print(model)
 
 ```
 
+
+
+
+
+
+
+
+
+```{r}
+library(caret)
+set.seed(123)
+
+split_index <- createDataPartition(new_dataframe2$hospital_death, p = 0.8, list = FALSE)
+training_data <- new_dataframe2[split_index, ]
+testing_data <- new_dataframe2[-split_index, ]
+
+library(glmnet)
+
+model <- glmnet(
+  as.matrix(training_data[, -which(names(training_data) %in% c("hospital_death"))]),
+  as.factor(training_data$hospital_death),
+  family = "binomial"
+)
+
+predictions <- predict(
+  model,
+  newx = as.matrix(testing_data[, -which(names(testing_data) %in% c("hospital_death"))]),
+  type = "response"
+)
+
+# Extract the predicted probabilities for the positive class
+positive_class_prob <- predictions[, 2]
+
+# Convert predicted probabilities to binary predictions
+binary_predictions <- ifelse(positive_class_prob > 0.5, 1, 0)
+
+if (length(binary_predictions) == nrow(testing_data)) {
+  # Evaluate model performance
+  confusion_matrix <- table(binary_predictions, testing_data$hospital_death)
+  accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+  print(confusion_matrix)
+  print(paste("Accuracy:", accuracy))
+} else {
+  print("Lengths of vectors do not match.")
+}
+```
+
+
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

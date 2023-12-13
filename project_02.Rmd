@@ -241,3 +241,41 @@ if (length(missing_features) > 0) {
     print(selected_features_lasso)
 }
 ```
+
+
+
+
+```{r}
+selected_columns <- c("hospital_death", "arf_apache", "intubated_apache", "ventilated_apache", "aids", "cirrhosis", "diabetes_mellitus", "hepatic_failure", "immunosuppression", "leukemia", "lymphoma", "solid_tumor_with_metastasis",  "elective_surgery", "apache_post_operative",
+ "heart_rate_apache",         "temp_apache",               "d1_diasbp_min",             "d1_diasbp_noninvasive_min",
+  "d1_heartrate_max",          "d1_mbp_min",                "d1_mbp_noninvasive_min",    "d1_resprate_max",          
+ "d1_spo2_min",               "d1_sysbp_min",              "d1_sysbp_noninvasive_min",  "d1_temp_min",              
+ "h1_diasbp_min",             "h1_diasbp_noninvasive_min", "h1_heartrate_max",          "h1_mbp_min",               
+ "h1_mbp_noninvasive_min",    "h1_resprate_max",           "h1_resprate_min",           "h1_spo2_min",              
+ "h1_sysbp_min",              "h1_sysbp_noninvasive_min",  "d1_bun_max",                "d1_bun_min",               
+ "d1_calcium_min",            "d1_creatinine_max",         "d1_creatinine_min",         "d1_hco3_max",              
+ "d1_hco3_min",               "d1_potassium_max",          "d1_wbc_max",                "d1_wbc_min", "map_apache"  )
+
+new_dataframe2 <- g[, selected_columns, drop = FALSE]
+```
+
+
+```{r}
+categorical_columns <- c("ethnicity", "gender", "hospital_admit_source", "icu_admit_source", "apache_3j_bodysystem", "apache_2_bodysystem", "icu_stay_type", "icu_type")
+
+encoded_data <- model.matrix(~ . - 1, data = g[, categorical_columns])
+
+encoded_data <- as.data.frame(encoded_data)
+
+new_dataframe2 <- cbind(new_dataframe2, encoded_data)
+```
+
+
+```{r}
+#head(new_dataframe)
+columns_to_append <- c("bmi",  "gcs_eyes_apache", "gcs_motor_apache", "gcs_unable_apache", "gcs_verbal_apache"
+                       
+                       )
+
+new_dataframe2 <- cbind(new_dataframe2, g[, columns_to_append, drop = FALSE])
+```
