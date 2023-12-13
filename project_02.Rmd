@@ -321,3 +321,38 @@ if (length(binary_predictions) == nrow(testing_data)) {
   print("Lengths of vectors do not match.")
 }
 ```
+
+
+
+```{r}
+
+#install.packages("rpart")
+library(rpart)
+
+# Convert 'hospital_death' to a factor
+training_data$hospital_death <- as.factor(training_data$hospital_death)
+testing_data$hospital_death <- as.factor(testing_data$hospital_death)
+
+# Build a decision tree model
+model_tree <- rpart(hospital_death ~ ., data = training_data, method = "class")
+
+# Make predictions on the testing data
+predictions_tree <- predict(model_tree, newdata = testing_data, type = "class")
+
+# Print the confusion matrix
+conf_matrix_tree <- table(predictions_tree, testing_data$hospital_death)
+print("Confusion Matrix:")
+print(conf_matrix_tree)
+
+# Calculate and print accuracy
+accuracy_tree <- sum(diag(conf_matrix_tree)) / sum(conf_matrix_tree)
+cat("Accuracy:", accuracy_tree, "\n")
+
+# Visualize the decision tree (requires the 'rpart.plot' package)
+install.packages("rpart.plot")
+library(rpart.plot)
+rpart.plot(model_tree)
+
+```
+
+

@@ -238,45 +238,35 @@ print(model)
 
 
 
-
 ```{r}
-library(caret)
-set.seed(123)
 
-split_index <- createDataPartition(new_dataframe2$hospital_death, p = 0.8, list = FALSE)
-training_data <- new_dataframe2[split_index, ]
-testing_data <- new_dataframe2[-split_index, ]
+#install.packages("rpart")
+library(rpart)
 
-library(glmnet)
+# Convert 'hospital_death' to a factor
+training_data$hospital_death <- as.factor(training_data$hospital_death)
+testing_data$hospital_death <- as.factor(testing_data$hospital_death)
 
-model <- glmnet(
-  as.matrix(training_data[, -which(names(training_data) %in% c("hospital_death"))]),
-  as.factor(training_data$hospital_death),
-  family = "binomial"
-)
+# Build a decision tree model
+model_tree <- rpart(hospital_death ~ ., data = training_data, method = "class")
 
-predictions <- predict(
-  model,
-  newx = as.matrix(testing_data[, -which(names(testing_data) %in% c("hospital_death"))]),
-  type = "response"
-)
+# Make predictions on the testing data
+predictions_tree <- predict(model_tree, newdata = testing_data, type = "class")
 
-# Extract the predicted probabilities for the positive class
-positive_class_prob <- predictions[, 2]
+# Print the confusion matrix
+conf_matrix_tree <- table(predictions_tree, testing_data$hospital_death)
+print("Confusion Matrix:")
+print(conf_matrix_tree)
 
-# Convert predicted probabilities to binary predictions
-binary_predictions <- ifelse(positive_class_prob > 0.5, 1, 0)
+# Calculate and print accuracy
+accuracy_tree <- sum(diag(conf_matrix_tree)) / sum(conf_matrix_tree)
+cat("Accuracy:", accuracy_tree, "\n")
 
-if (length(binary_predictions) == nrow(testing_data)) {
-  # Evaluate model performance
-  confusion_matrix <- table(binary_predictions, testing_data$hospital_death)
-  accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
-  print(confusion_matrix)
-  print(paste("Accuracy:", accuracy))
-} else {
-  print("Lengths of vectors do not match.")
-}
+# Visualize the decision tree (requires the 'rpart.plot' package)
+install.packages("rpart.plot")
+library(rpart.plot)
+rpart.plot(model_tree)
+
 ```
-
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
