@@ -1,5 +1,5 @@
 ---
-title: "Team 8 EDA project"
+title: "Team 8 project 2 - model building"
 author: "Team 8"
 # date: "today"
 date: "`r Sys.Date()`"
@@ -60,4 +60,13 @@ for (col in names(g)) {
     qqline(g[[col]])
   }
 }
+```
+
+
+```{r}
+```{r}
+library(dplyr)
+columns_to_convert <- c("arf_apache", "gcs_eyes_apache", "gcs_motor_apache", "gcs_unable_apache", "gcs_verbal_apache", "intubated_apache", "ventilated_apache", "aids", "cirrhosis", "diabetes_mellitus", "hepatic_failure", "immunosuppression", "leukemia", "lymphoma", "solid_tumor_with_metastasis", "ethnicity", "gender", "hospital_admit_source", "icu_admit_source", "apache_3j_bodysystem", "apache_2_bodysystem", "elective_surgery", "apache_post_operative", "icu_stay_type", "icu_type", "readmission_status")
+
+g <- g %>% mutate_at(vars(columns_to_convert), factor)
 ```
