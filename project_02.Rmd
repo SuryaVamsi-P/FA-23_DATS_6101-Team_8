@@ -361,7 +361,51 @@ text(1:length(accuracies), accuracies, labels = round(accuracies, 2), pos = 3, c
 
 legend("topright", legend = model_names, fill = c("blue", "red"), inset = c(0.01, 0.09))
 
+```
 
+
+
+
+
+```{r}
+library(DMwR)
+
+target_variable <- "hospital_death"
+
+int_cols <- sapply(g, is.integer) & names(g) != target_variable
+char_cols <- sapply(g, is.character)
+g[, int_cols | char_cols] <- lapply(g[, int_cols | char_cols], as.numeric)
+
+factor_cols <- sapply(g, is.factor) & names(g) != target_variable
+numeric_data <- g[, !factor_cols]
+
+print(table(g[, target_variable]))
+
+balanced_data <- tryCatch({
+    SMOTE(as.formula(paste(target_variable, "~ .")), data = numeric_data, perc.over = 400, k = 5)
+}, error=function(e) {
+    print(e)
+})
+
+if (!inherits(balanced_data, "error")) {
+    new_distribution <- table(balanced_data[, target_variable])
+    print(new_distribution)
+    print(nrow(balanced_data))
+} else {
+    print("Error in applying SMOTE")
+}
+
+```
+
+
+```{r}
+factor_cols <- sapply(g, is.factor)
+for(col in names(g)[factor_cols]) {
+    set.seed(123)  
+    additional_factor_data <- sample(g[[col]], nrow(balanced_data) - nrow(g), replace = TRUE)
+    balanced_data[[col]] <- c(g[[col]], additional_factor_data)
+}
+#str(balanced_data)
 ```
 
 
