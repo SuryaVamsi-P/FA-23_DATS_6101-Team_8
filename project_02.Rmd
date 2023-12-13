@@ -174,3 +174,32 @@ stepwise_model <- stepAIC(glm(target ~ ., data = model_data, family = binomial),
 summary(stepwise_model)
 ```
 
+
+
+```{r}
+library(dplyr)
+
+g$hospital_death <- as.factor(g$hospital_death)
+
+features_to_test <- c("arf_apache", "intubated_apache", "ventilated_apache", "aids", "cirrhosis", "diabetes_mellitus", "hepatic_failure", "immunosuppression", "leukemia", "lymphoma", "solid_tumor_with_metastasis",  "gender", "elective_surgery", "apache_post_operative",  "readmission_status") # replace with your actual feature names
+
+chi_square_results <- data.frame(Feature = character(), Chi_Square = numeric(), P_Value = numeric(), stringsAsFactors = FALSE)
+
+for (feature in features_to_test) {
+    if (feature %in% names(g)) {
+        
+        g[[feature]] <- as.factor(g[[feature]])
+
+        
+        test_result <- chisq.test(table(g[[feature]], g$hospital_death))
+
+        
+        chi_square_results <- rbind(chi_square_results, 
+                                    data.frame(Feature = feature, 
+                                               Chi_Square = test_result$statistic, 
+                                               P_Value = test_result$p.value))
+    }
+}
+
+print(chi_square_results)
+```
