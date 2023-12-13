@@ -594,5 +594,20 @@ cat("Recall:", recall, "\n")
 ```
 
 
+```{r}
+library(pROC)
+
+prob_predictions <- predict(tuned_model, newdata = testing_data4, type = "prob")
+
+prob_positive_class <- prob_predictions[, "X1"]
+
+roc_result <- roc(testing_data4$hospital_death, prob_positive_class)
+auc_value <- auc(roc_result)
+
+print(auc_value)
+
+```
+
+
 
 
