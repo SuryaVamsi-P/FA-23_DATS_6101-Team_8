@@ -115,3 +115,11 @@ for (col in columns_to_impute1) {
 g[["h1_resprate_min"]][is.na(g[["h1_resprate_min"]])] <- mean(g[["h1_resprate_min"]], na.rm = TRUE)
 ```
 
+```{r}
+if (any(is.na(g))) {
+  print("There are missing values in the dataset.")
+} else {
+  print("No missing values found in the dataset.")
+}
+```
+
