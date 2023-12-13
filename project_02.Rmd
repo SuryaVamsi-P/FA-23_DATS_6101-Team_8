@@ -64,9 +64,20 @@ for (col in names(g)) {
 
 
 ```{r}
-```{r}
 library(dplyr)
 columns_to_convert <- c("arf_apache", "gcs_eyes_apache", "gcs_motor_apache", "gcs_unable_apache", "gcs_verbal_apache", "intubated_apache", "ventilated_apache", "aids", "cirrhosis", "diabetes_mellitus", "hepatic_failure", "immunosuppression", "leukemia", "lymphoma", "solid_tumor_with_metastasis", "ethnicity", "gender", "hospital_admit_source", "icu_admit_source", "apache_3j_bodysystem", "apache_2_bodysystem", "elective_surgery", "apache_post_operative", "icu_stay_type", "icu_type", "readmission_status")
 
 g <- g %>% mutate_at(vars(columns_to_convert), factor)
+```
+
+
+```{r}
+g[g == ""] <- NA
+
+factor_vars <- sapply(g, is.factor)
+
+for (col in names(g)[factor_vars]) {
+  mode_value <- names(sort(table(g[[col]]), decreasing = TRUE))[1]
+  g[[col]][is.na(g[[col]])] <- mode_value
+}
 ```
